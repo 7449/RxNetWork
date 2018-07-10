@@ -1,5 +1,6 @@
 package com.rxnetwork.sample
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import io.reactivex.network.RxNetWork
@@ -20,16 +21,15 @@ class App : Application() {
         RxNetWork
                 .instance
                 .setBaseUrl(Api.ZL_BASE_API)
-
+                .setLogInterceptor(SimpleLogInterceptor())
         RxCache
                 .instance
                 .setDiskBuilder(RxCache.DiskBuilder(FileUtils.getDiskCacheDir(this, "RxCache")))
     }
 
     companion object {
-        private var context: Context? = null
-
-        val instance: App
-            get() = (context as App?)!!
+        @SuppressLint("StaticFieldLeak")
+        private lateinit var context: Context
+        val instance: App by lazy { context as App }
     }
 }

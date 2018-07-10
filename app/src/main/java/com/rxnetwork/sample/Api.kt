@@ -10,7 +10,7 @@ import retrofit2.http.Query
  */
 internal object Api {
 
-    val ZL_BASE_API = "https://zhuanlan.zhihu.com/api/"
+    const val ZL_BASE_API = "https://zhuanlan.zhihu.com/api/"
 
     internal interface ZLService {
         @GET("columns/" + "{suffix}/posts")

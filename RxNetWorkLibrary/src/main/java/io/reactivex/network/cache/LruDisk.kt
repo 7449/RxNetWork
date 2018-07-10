@@ -18,17 +18,12 @@ import java.nio.charset.Charset
 
 class LruDisk internal constructor(path: File, version: Int, valueCount: Int, maxSize: Int) {
 
-    private val diskLruCache: DiskLruCache?
+    private var diskLruCache: DiskLruCache
     private val gson: Gson
 
     internal val cacheSize: Long
         get() {
-            try {
-                return diskLruCache!!.size()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            return -1
+            return diskLruCache.size()
         }
 
     init {
@@ -43,7 +38,7 @@ class LruDisk internal constructor(path: File, version: Int, valueCount: Int, ma
         delete(key)
         var editor: DiskLruCache.Editor? = null
         try {
-            editor = diskLruCache!!.edit(key.toString())
+            editor = diskLruCache.edit(key.toString())
             if (editor == null) {
                 return false
             }
@@ -56,7 +51,6 @@ class LruDisk internal constructor(path: File, version: Int, valueCount: Int, ma
             OkioUtils.abort(editor)
             e.printStackTrace()
         }
-
         OkioUtils.abort(editor)
         return false
     }
@@ -64,7 +58,7 @@ class LruDisk internal constructor(path: File, version: Int, valueCount: Int, ma
     fun <T> query(@NonNull key: Any, typeToken: TypeToken<T>): T? {
         var snapshot: DiskLruCache.Snapshot? = null
         try {
-            snapshot = diskLruCache!!.get(key.toString())
+            snapshot = diskLruCache.get(key.toString())
             if (snapshot == null) {
                 return null
             }
@@ -80,44 +74,38 @@ class LruDisk internal constructor(path: File, version: Int, valueCount: Int, ma
 
     internal fun delete(@NonNull key: Any): Boolean {
         try {
-            return diskLruCache!!.remove(key.toString())
+            return diskLruCache.remove(key.toString())
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
         return false
     }
 
     internal fun deleteAll() {
         try {
-            diskLruCache!!.delete()
+            diskLruCache.delete()
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
     }
 
     internal fun containsKey(@NonNull key: Any): Boolean {
         try {
-            return diskLruCache!!.get(key.toString()) == null
+            return diskLruCache.get(key.toString()) == null
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
         return false
     }
 
     internal fun onDestroy(): Boolean {
-        if (diskLruCache != null) {
-            try {
-                if (!diskLruCache.isClosed) {
-                    diskLruCache.close()
-                }
-                return true
-            } catch (e: IOException) {
-                e.printStackTrace()
+        try {
+            if (!diskLruCache.isClosed) {
+                diskLruCache.close()
             }
-
+            return true
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
         return false
     }

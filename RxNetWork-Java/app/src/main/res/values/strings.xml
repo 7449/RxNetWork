@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">RxNetWork</string>
-    <string name="post">post</string>
-    <string name="unregister">unregister</string>
-    <string name="test_bus">test bus</string>
-    <string name="test_rxjava">请求多个网络</string>
-</resources>

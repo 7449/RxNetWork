@@ -17,7 +17,6 @@ object OkioUtils {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         }
     }
 

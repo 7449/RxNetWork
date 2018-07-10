@@ -9,14 +9,11 @@ import io.reactivex.observers.DisposableObserver
 
 internal open class RxBusObserver<T> : DisposableObserver<T>() {
     override fun onNext(@NonNull t: T) {
-
     }
 
     override fun onError(@NonNull e: Throwable) {
-
     }
 
     override fun onComplete() {
-
     }
 }

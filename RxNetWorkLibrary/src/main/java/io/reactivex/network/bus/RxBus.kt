@@ -2,7 +2,6 @@ package io.reactivex.network.bus
 
 import android.support.v4.util.ArrayMap
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.network.util.RxUtils
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -11,20 +10,18 @@ import io.reactivex.subjects.PublishSubject
  * by y on 2017/2/22.
  */
 class RxBus private constructor() {
-    private val rxBusEventArrayMap: ArrayMap<Any, RxBusEvent> = ArrayMap()
 
-    private object RxBusHolder {
-        val rxBus = RxBus()
+    companion object {
+        val instance: RxBus by lazy { RxBus() }
     }
+
+    private val rxBusEventArrayMap: ArrayMap<Any, RxBusEvent> = ArrayMap()
 
     fun post(obj: Any): Boolean = post(obj, obj)
 
     fun post(tag: Any, obj: Any): Boolean {
-        val rxBusEvent = rxBusEventArrayMap[tag]
-        if (!RxUtils.isEmpty(rxBusEvent)) {
-            rxBusEvent!!.subject!!.onNext(obj)
-            return true
-        }
+        val rxBusEvent = rxBusEventArrayMap[tag] ?: return true
+        rxBusEvent.subject.onNext(obj)
         return false
     }
 
@@ -34,13 +31,12 @@ class RxBus private constructor() {
      * @param tag      标志
      * @param callBack 回调
      */
-    fun <T> register(tag: Any,
-                     callBack: RxBusCallBack<T>): DisposableObserver<*>? {
+    fun <T> register(tag: Any, callBack: RxBusCallBack<T>): DisposableObserver<*> {
         var rxBusEvent = rxBusEventArrayMap[tag]
-        if (RxUtils.isEmpty(rxBusEvent)) {
+        if (rxBusEvent == null) {
             rxBusEvent = RxBusEvent()
             rxBusEvent.subject = PublishSubject.create<Any>().toSerialized()
-            rxBusEvent.disposable = rxBusEvent.subject!!
+            rxBusEvent.disposable = rxBusEvent.subject
                     .ofType(callBack.busOfType())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -55,38 +51,9 @@ class RxBus private constructor() {
                             callBack.onBusNext(t)
                         }
                     })
-            rxBusEventArrayMap.put(tag, rxBusEvent)
+            rxBusEventArrayMap[tag] = rxBusEvent
         }
-        return rxBusEvent!!.disposable
-    }
-
-    /**
-     * 接受消息
-     *
-     * @param tag      标志
-     * @param callBack 回调
-     */
-    fun <T> register(tag: String, callBack: RxBusCallBack<T>): DisposableObserver<*>? {
-        var rxBusEvent = rxBusEventArrayMap[tag]
-        if (RxUtils.isEmpty(rxBusEvent)) {
-            rxBusEvent = RxBusEvent()
-            rxBusEvent.subject = PublishSubject.create<Any>().toSerialized()
-            rxBusEvent.disposable = rxBusEvent.subject!!
-                    .ofType(callBack.busOfType())
-                    .subscribeWith(object : RxBusObserver<T>() {
-                        override fun onError(@io.reactivex.annotations.NonNull e: Throwable) {
-                            super.onError(e)
-                            callBack.onBusError(e)
-                        }
-
-                        override fun onNext(@io.reactivex.annotations.NonNull t: T) {
-                            super.onNext(t)
-                            callBack.onBusNext(t)
-                        }
-                    })
-            rxBusEventArrayMap.put(tag, rxBusEvent)
-        }
-        return rxBusEvent!!.disposable
+        return rxBusEvent.disposable
     }
 
     /**
@@ -96,16 +63,13 @@ class RxBus private constructor() {
      * @return true 取消成功
      */
     fun unregister(tag: Any): Boolean {
-        val rxBusEvent = rxBusEventArrayMap[tag]
-        if (RxUtils.isEmpty(rxBusEvent)) {
-            return true
-        }
-        val subject = rxBusEvent!!.subject
+        val rxBusEvent = rxBusEventArrayMap[tag] ?: return true
+        val subject = rxBusEvent.subject
         val disposable = rxBusEvent.disposable
-        if (!disposable!!.isDisposed) {
+        if (!disposable.isDisposed) {
             disposable.dispose()
         }
-        if (!subject!!.hasObservers()) {
+        if (!subject.hasObservers()) {
             rxBusEventArrayMap.remove(tag)
             return true
         }
@@ -127,9 +91,5 @@ class RxBus private constructor() {
         return true
     }
 
-    companion object {
 
-        val instance: RxBus
-            get() = RxBusHolder.rxBus
-    }
 }

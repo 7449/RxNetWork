@@ -8,6 +8,6 @@ import io.reactivex.subjects.Subject
  */
 
 internal class RxBusEvent {
-    var subject: Subject<Any>? = null
-    var disposable: DisposableObserver<*>? = null
+    lateinit var subject: Subject<Any>
+    lateinit var disposable: DisposableObserver<*>
 }

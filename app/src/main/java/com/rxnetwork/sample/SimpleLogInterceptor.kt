@@ -28,8 +28,8 @@ internal class SimpleLogInterceptor : Interceptor {
 
     companion object {
 
-        private val TAG = "RxNetWorkApiLog"
-        private val CONTENT_TITLE = "Api Content-->:"
-        private val HEADER_TITLE = "Api Header-->"
+        private const val TAG = "RxNetWorkApiLog"
+        private const val CONTENT_TITLE = "Api Content-->:"
+        private const val HEADER_TITLE = "Api Header-->"
     }
 }

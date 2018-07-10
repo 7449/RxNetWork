@@ -3,6 +3,7 @@ package com.rxnetwork.sample
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.AppCompatButton
 import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -22,48 +23,35 @@ import io.reactivex.network.cache.RxCache
 import java.util.*
 
 
-open class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>?>, View.OnClickListener {
+open class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>>, View.OnClickListener {
 
-    private var adapter: MainAdapter? = null
-    private var textView: AppCompatTextView? = null
-    private var progressBar: ProgressBar? = null
+    private lateinit var adapter: MainAdapter
+    private lateinit var textView: AppCompatTextView
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val recyclerView = findViewById(R.id.recyclerView) as RecyclerView
-        progressBar = findViewById(R.id.progress) as ProgressBar
-        textView = findViewById(R.id.bus_message) as AppCompatTextView
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        progressBar = findViewById(R.id.progress)
+        textView = findViewById(R.id.bus_message)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
         adapter = MainAdapter(ArrayList())
         recyclerView.adapter = adapter
-
-
         RxBus.instance.register(BUS_TAG,
                 object : SimpleRxBusCallBack<String>() {
-                    override fun onBusNext(s: String) {
-                        super.onBusNext(s)
-                        textView!!.text = TextUtils.concat("RxBus Message:", s)
+                    override fun onBusNext(obj: String) {
+                        super.onBusNext(obj)
+                        textView.text = TextUtils.concat("RxBus Message:", obj)
                     }
 
                     override fun busOfType(): Class<String> = String::class.java
                 })
-        findViewById(R.id.btn_send).setOnClickListener(this)
-        findViewById(R.id.btn_unregister).setOnClickListener(this)
-        findViewById(R.id.btn_test_bus).setOnClickListener(this)
-        findViewById(R.id.btn_start_network).setOnClickListener(this)
-        findViewById(R.id.btn_cancel_network).setOnClickListener(this)
-
-
-        //        Observable<CacheResult<Object>> daily = RxNetWork
-        //                .observable(Api.ZLService.class)
-        //                .getList("daily", 20, 0)
-        //                .compose(RxCache.getInstance().customizeTransformer("", new CustomizeTransformerCall() {
-        //                    @Override
-        //                    public <T> ObservableSource<CacheResult<T>> applyCustomize(@NonNull Object key, Observable<T> upstream) {
-        //                        return Observable.just(null);
-        //                    }
-        //                }));
+        findViewById<AppCompatButton>(R.id.btn_send).setOnClickListener(this)
+        findViewById<AppCompatButton>(R.id.btn_unregister).setOnClickListener(this)
+        findViewById<AppCompatButton>(R.id.btn_test_bus).setOnClickListener(this)
+        findViewById<AppCompatButton>(R.id.btn_start_network).setOnClickListener(this)
+        findViewById<AppCompatButton>(R.id.btn_cancel_network).setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
@@ -89,7 +77,7 @@ open class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>
             }
             R.id.btn_cancel_network -> RxNetWork.instance.cancel(javaClass.simpleName)
         }
-        textView!!.text = ""
+        textView.text = ""
     }
 
     private fun startActivity(clz: Class<*>) {
@@ -99,23 +87,21 @@ open class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>
     }
 
     override fun onNetWorkStart() {
-        adapter!!.clear()
-        progressBar!!.visibility = View.VISIBLE
+        adapter.clear()
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun onNetWorkError(e: Throwable) {
-        progressBar!!.visibility = View.GONE
+        progressBar.visibility = View.GONE
         Toast.makeText(applicationContext, "net work error:" + e.toString(), Toast.LENGTH_SHORT).show()
     }
 
     override fun onNetWorkComplete() {
-        progressBar!!.visibility = View.GONE
+        progressBar.visibility = View.GONE
     }
 
-    override fun onNetWorkSuccess(data: List<ListModel>?) {
-        if (data != null) {
-            adapter!!.addAll(data)
-        }
+    override fun onNetWorkSuccess(data: List<ListModel>) {
+        adapter.addAll(data)
     }
 
     override fun onBackPressed() {
@@ -124,7 +110,11 @@ open class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>
     }
 
     companion object {
+        private const val BUS_TAG = "bus_tag"
+    }
 
-        private val BUS_TAG = "bus_tag"
+    override fun onDestroy() {
+        super.onDestroy()
+        RxCache.instance.onDestroy()
     }
 }

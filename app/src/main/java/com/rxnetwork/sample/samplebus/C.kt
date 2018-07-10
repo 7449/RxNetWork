@@ -1,6 +1,7 @@
 package com.rxnetwork.sample.samplebus
 
 import android.os.Bundle
+import android.support.v7.widget.AppCompatButton
 import android.widget.Toast
 import com.rxnetwork.sample.R
 
@@ -13,7 +14,7 @@ class C : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple)
-        findViewById(R.id.btn_simple).setOnClickListener { startActivity(D::class.java) }
+        findViewById<AppCompatButton>(R.id.btn_simple).setOnClickListener { startActivity(D::class.java) }
     }
 
     override fun onBusNext(t: String) {
