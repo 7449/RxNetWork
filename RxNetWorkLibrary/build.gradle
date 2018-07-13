@@ -32,7 +32,7 @@ publish {
     userOrg = 'ydevelop'
     groupId = 'com.ydevelop'
     artifactId = 'rxNetWork-kotlin'
-    publishVersion = '0.1.5'
+    publishVersion = '0.1.6'
     desc = 'this is rxnetwork'
     website = 'https://github.com/7449/RxNetWork'
 }
