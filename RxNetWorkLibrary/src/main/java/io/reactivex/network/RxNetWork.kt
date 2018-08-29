@@ -2,6 +2,7 @@ package io.reactivex.network
 
 
 import android.support.v4.util.ArrayMap
+import android.support.v4.util.SimpleArrayMap
 import com.google.gson.Gson
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,12 +18,13 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+
 /**
  * by y on 2017/2/22.
  */
 class RxNetWork private constructor() {
     companion object {
-        const val TAG = "RxNetWork"
+        const val DEFAULT_TAG = "RxNetWork"
         val instance: RxNetWork by lazy { RxNetWork() }
         fun <T> observable(service: Class<T>): T = instance.getRetrofit().create(service)
     }
@@ -70,8 +72,8 @@ class RxNetWork private constructor() {
         return this
     }
 
-    fun setTimeoutTime(timeoutTime: Int): RxNetWork {
-        this.timeoutTime = timeoutTime.toLong()
+    fun setTimeout(timeout: Int): RxNetWork {
+        this.timeoutTime = timeout.toLong()
         return this
     }
 
@@ -91,16 +93,43 @@ class RxNetWork private constructor() {
         return this
     }
 
-    fun <M> getApi(mObservable: Observable<M>, listener: RxNetWorkListener<M>): Disposable =
-            getApi(TAG, mObservable, listener)
+    fun <M> getApi(mObservable: Observable<M>, listener: RxNetWorkListener<M>) {
+        getApi(DEFAULT_TAG, mObservable, listener)
+    }
 
 
-    fun <M> getApi(tag: Any, observable: Observable<M>, listener: RxNetWorkListener<M>): Disposable {
-        listener.onNetWorkStart()
-        val disposable = observable
+    fun <M> getApi(tag: Any, observable: Observable<M>, listener: RxNetWorkListener<M>?) {
+        listener?.onNetWorkStart()
+        arrayMap[tag] = observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableObserver<M>() {
+
+                    override fun onError(e: Throwable) {
+                        listener?.onNetWorkError(e)
+                    }
+
+                    override fun onComplete() {
+                        listener?.onNetWorkComplete()
+                    }
+
+                    override fun onNext(m: M) {
+                        listener?.onNetWorkSuccess(m)
+                    }
+                })
+    }
+
+    fun <M> getApiTask(tag: Any, observable: Observable<M>, listener: RxNetWorkTaskListener<RxNetWorkTask<M>>) {
+        listener.onNetWorkStart()
+        val disposable = observable
+                .map { t -> RxNetWorkTask(t, listener.tag) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableObserver<RxNetWorkTask<M>>() {
+
+                    override fun onNext(mRxNetWorkTask: RxNetWorkTask<M>) {
+                        listener.onNetWorkSuccess(mRxNetWorkTask)
+                    }
 
                     override fun onError(e: Throwable) {
                         listener.onNetWorkError(e)
@@ -109,13 +138,8 @@ class RxNetWork private constructor() {
                     override fun onComplete() {
                         listener.onNetWorkComplete()
                     }
-
-                    override fun onNext(m: M) {
-                        listener.onNetWorkSuccess(m)
-                    }
                 })
-        arrayMap.put(tag, disposable)
-        return disposable
+        arrayMap[tag] = disposable
     }
 
     fun cancel(tag: Any) {
@@ -126,11 +150,18 @@ class RxNetWork private constructor() {
         }
     }
 
+    fun cancelDefaultKey() {
+        cancel(DEFAULT_TAG)
+    }
+
     fun cancelAll() {
         for ((key) in arrayMap) {
             cancel(key)
         }
     }
+
+    fun containsKey(key: Any): Boolean = arrayMap.containsKey(key)
+    fun getMap(): SimpleArrayMap<Any, Disposable> = arrayMap
 
     private fun getRetrofit(): Retrofit {
         if (mOkHttpClient == null) {
