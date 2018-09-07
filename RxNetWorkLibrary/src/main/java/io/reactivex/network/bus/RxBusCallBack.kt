@@ -5,7 +5,7 @@ package io.reactivex.network.bus
  */
 
 interface RxBusCallBack<T> {
-    fun onBusNext(t: T)
+    fun onBusNext(entity: T)
 
     fun onBusError(throwable: Throwable)
 

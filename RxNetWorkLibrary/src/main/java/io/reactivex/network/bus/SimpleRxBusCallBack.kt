@@ -5,7 +5,7 @@ package io.reactivex.network.bus
  */
 
 abstract class SimpleRxBusCallBack<T> : RxBusCallBack<T> {
-    override fun onBusNext(obj: T) {
+    override fun onBusNext(entity: T) {
     }
 
     override fun onBusError(throwable: Throwable) {

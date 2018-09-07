@@ -22,9 +22,8 @@ class RxCache private constructor() {
     private lateinit var lruDisk: LruDisk
 
 
-    fun setDiskBuilder(diskBuilder: DiskBuilder): RxCache {
+    fun setDiskBuilder(diskBuilder: DiskBuilder) = apply {
         lruDisk = LruDisk(diskBuilder.file, diskBuilder.version, diskBuilder.valueCount, diskBuilder.maxSize)
-        return this
     }
 
     class DiskBuilder {

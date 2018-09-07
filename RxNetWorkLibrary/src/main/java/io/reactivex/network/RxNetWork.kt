@@ -26,72 +26,31 @@ class RxNetWork private constructor() {
     companion object {
         const val DEFAULT_TAG = "RxNetWork"
         val instance: RxNetWork by lazy { RxNetWork() }
-        fun <T> observable(service: Class<T>): T = instance.getRetrofit().create(service)
+        fun <T> observable(service: Class<T>): T = instance.retrofitFactory().create(service)
     }
 
     private val arrayMap: ArrayMap<Any, Disposable> = ArrayMap()
+    var timeoutTime = 15.toLong()
+    var isRetryOnConnectionFailure = true
+    var mGson: Gson? = null
+    var baseUrl: String? = null
+    var mOkHttpClient: OkHttpClient? = null
+    var retrofit: Retrofit? = null
+    var mConverterFactory: Converter.Factory? = null
+    var mAdapterFactory: CallAdapter.Factory? = null
+    var mLogInterceptor: Interceptor? = null
+    var mHeaderInterceptor: Interceptor? = null
 
-    private var timeoutTime = 15.toLong()
-    private var isRetryOnConnectionFailure = true
-    private var mGson: Gson? = null
-    private var baseUrl: String? = null
-    private var mOkHttpClient: OkHttpClient? = null
-    private var retrofit: Retrofit? = null
-    private var mConverterFactory: Converter.Factory? = null
-    private var mAdapterFactory: CallAdapter.Factory? = null
-    private var mLogInterceptor: Interceptor? = null
-    private var mHeaderInterceptor: Interceptor? = null
-
-    fun setRetryOnConnectionFailure(retryOnConnectionFailure: Boolean): RxNetWork {
-        isRetryOnConnectionFailure = retryOnConnectionFailure
-        return this
-    }
-
-    fun setBaseUrl(url: String): RxNetWork {
-        this.baseUrl = url
-        return this
-    }
-
-    fun setGson(gson: Gson): RxNetWork {
-        this.mGson = gson
-        return this
-    }
-
-    fun setOkHttpClient(okHttpClient: OkHttpClient): RxNetWork {
-        this.mOkHttpClient = okHttpClient
-        return this
-    }
-
-    fun setLogInterceptor(mLogInterceptor: Interceptor): RxNetWork {
-        this.mLogInterceptor = mLogInterceptor
-        return this
-    }
-
-    fun setHeaderInterceptor(mHeaderInterceptor: Interceptor): RxNetWork {
-        this.mHeaderInterceptor = mHeaderInterceptor
-        return this
-    }
-
-    fun setTimeout(timeout: Int): RxNetWork {
-        this.timeoutTime = timeout.toLong()
-        return this
-    }
-
-    fun setConverterFactory(factory: Converter.Factory): RxNetWork {
-        this.mConverterFactory = factory
-        return this
-    }
-
-    fun setRetrofit(retrofit: Retrofit): RxNetWork {
-        this.retrofit = retrofit
-        return this
-    }
-
-
-    fun setAdapterFactory(factory: CallAdapter.Factory): RxNetWork {
-        this.mAdapterFactory = factory
-        return this
-    }
+    fun setRetryOnConnectionFailure(retryOnConnectionFailure: Boolean) = apply { isRetryOnConnectionFailure = retryOnConnectionFailure }
+    fun setBaseUrl(url: String) = apply { this.baseUrl = url }
+    fun setGson(gson: Gson) = apply { this.mGson = gson }
+    fun setOkHttpClient(okHttpClient: OkHttpClient) = apply { this.mOkHttpClient = okHttpClient }
+    fun setLogInterceptor(mLogInterceptor: Interceptor) = apply { this.mLogInterceptor = mLogInterceptor }
+    fun setHeaderInterceptor(mHeaderInterceptor: Interceptor) = apply { this.mHeaderInterceptor = mHeaderInterceptor }
+    fun setTimeout(timeout: Int) = apply { this.timeoutTime = timeout.toLong() }
+    fun setConverterFactory(factory: Converter.Factory) = apply { this.mConverterFactory = factory }
+    fun setRetrofit(retrofit: Retrofit) = apply { this.retrofit = retrofit }
+    fun setAdapterFactory(factory: CallAdapter.Factory) = apply { this.mAdapterFactory = factory }
 
     fun <M> getApi(mObservable: Observable<M>, listener: RxNetWorkListener<M>) {
         getApi(DEFAULT_TAG, mObservable, listener)
@@ -163,7 +122,7 @@ class RxNetWork private constructor() {
     fun containsKey(key: Any): Boolean = arrayMap.containsKey(key)
     fun getMap(): SimpleArrayMap<Any, Disposable> = arrayMap
 
-    private fun getRetrofit(): Retrofit {
+    private fun retrofitFactory(): Retrofit {
         if (mOkHttpClient == null) {
             mOkHttpClient = initOkHttp()
         }
@@ -181,20 +140,20 @@ class RxNetWork private constructor() {
 
     private fun initRetrofit(): Retrofit {
         return Retrofit.Builder()
-                .client(mOkHttpClient)
+                .client(mOkHttpClient!!)
                 .baseUrl(baseUrl!!)
-                .addConverterFactory(mConverterFactory)
-                .addCallAdapterFactory(mAdapterFactory)
+                .addConverterFactory(mConverterFactory!!)
+                .addCallAdapterFactory(mAdapterFactory!!)
                 .build()
     }
 
     private fun initOkHttp(): OkHttpClient {
         val builder = OkHttpClient.Builder()
         if (mLogInterceptor != null) {
-            builder.addInterceptor(mLogInterceptor)
+            builder.addInterceptor(mLogInterceptor!!)
         }
         if (mHeaderInterceptor != null) {
-            builder.addInterceptor(mHeaderInterceptor)
+            builder.addInterceptor(mHeaderInterceptor!!)
         }
         builder.connectTimeout(timeoutTime, TimeUnit.SECONDS)
                 .writeTimeout(timeoutTime, TimeUnit.SECONDS)
@@ -207,7 +166,7 @@ class RxNetWork private constructor() {
         if (mGson == null) {
             mGson = Gson()
         }
-        mConverterFactory = GsonConverterFactory.create(mGson)
+        mConverterFactory = GsonConverterFactory.create(mGson!!)
     }
 
     private fun rxNetWorkAdapterFactory() {
