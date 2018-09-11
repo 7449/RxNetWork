@@ -72,7 +72,6 @@ open class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>
                         }
                 RxNetWork
                         .instance
-                        .setLogInterceptor(SimpleLogInterceptor())
                         .getApi(javaClass.simpleName, daily, this)
             }
             R.id.btn_cancel_network -> RxNetWork.instance.cancel(javaClass.simpleName)

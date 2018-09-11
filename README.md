@@ -11,27 +11,29 @@ android 网络请求简化库
 
 [https://github.com/7449/JsoupSample](https://github.com/7449/JsoupSample)
 
-> api 'com.ydevelop:rxNetWork-kotlin:0.1.7'
+> api 'com.ydevelop:rxNetWork:0.1.9'
 
 
 > 建议初始化:
 
-	public class App extends Application {
-	
-	    @Override
-	    public void onCreate() {
-	        super.onCreate();
-	        
-	        RxNetWork
-	                .getInstance()
-	                .setBaseUrl("your base url")
-					...;
-	    }
-	
-	}
+    class App : Application() {
+    
+        override fun onCreate() {
+            super.onCreate()
+            RxNetWork
+                    .instance
+                    .apply {
+                        baseUrl = Api.ZL_BASE_API
+                        logInterceptor = SimpleLogInterceptor()
+                    }
+            RxCache
+                    .instance
+                    .setDiskBuilder(RxCache.DiskBuilder(FileUtils.getDiskCacheDir(this, "RxCache")))
+        }
+    }
 
 
-> 支持一下自定义（如果不想使用内置类库可自定义）：
+> 支持以下自定义（如果不想使用内置类库可自定义）：
 
 Gson,
 
@@ -53,47 +55,25 @@ CallAdapter.Factory
 
 * 取消网络请求：
 
-	RxNetWork.getInstance().cancel(tag);
+	NetWork.instance.cancel()
 
 
-        Disposable api = RxNetWork
-                .getInstance()
-                .getApi(getClass().getSimpleName(),
-                	RxNetWork.observable(),
-                new RxNetWorkListener<List<ListModel>>() {
-                    @Override
-                    public void onNetWorkStart() {
-
+        RxNetWork.instance.getApi(tag,
+                RxNetWork.observable(),
+                object : RxNetWorkListener<Any> {
+                    override fun onNetWorkStart() {
                     }
 
-                    @Override
-                    public void onNetWorkError(Throwable e) {
-
+                    override fun onNetWorkError(e: Throwable) {
                     }
 
-                    @Override
-                    public void onNetWorkComplete() {
-
+                    override fun onNetWorkComplete() {
                     }
 
-                    @Override
-                    public void onNetWorkSuccess(List<ListModel> data) {
-
+                    override fun onNetWorkSuccess(data: Any) {
                     }
-                  
-                });
+                })
 
-
-
-> 缓存：
-
-如果使用默认的`okhttp`,缓存需要如下配置
-
-        RxNetWork
-                .getInstance()
-                .setCache()
-                .setCacheInterceptor();
-                
 > RxCache
 
 `okhttp`不支持post缓存，所以新增`RxCache`对缓存的支持
@@ -120,49 +100,45 @@ true ： 有网的情况下 网络优先，否则 缓存优先
 如果使用默认的`okhttp`,配置Header需要如下操作：
 
         RxNetWork
-                .getInstance()
-                .setHeaderInterceptor();
-		
+                .instance
+                .apply { 
+                    headerInterceptor = SimpleHeaderInterceptor()
+                }
 
 > 配置Log
 
 如果使用默认的`okhttp`,配置Log需要如下操作：
 
         RxNetWork
-                .getInstance()
-                .setLogInterceptor();
+                .instance
+                .apply { 
+                    headerInterceptor = SimpleLogInterceptor()
+                }
 
 > RxBus使用：
 
-
 #### 发送消息：
 
-        RxBus.getInstance().post("tag","message");
-        RxBus.getInstance().post("tag");
+        RxBus.instance.post(tag,message)
+        RxBus.instance.post(tag)
 
 #### 注册消息体：
 
-        RxBus.getInstance().register(getClass().getSimpleName(), new RxBusCallBack<String>() {
-            @Override
-            public void onBusNext(String s) {
+        RxBus.instance
+                .register(tag,object :RxBusCallBack<Any>{
+                    override fun onBusError(throwable: Throwable) {
+                    }
 
-            }
+                    override fun busOfType(): Class<Any> {
+                    }
 
-            @Override
-            public void onBusError(Throwable throwable) {
-
-            }
-
-            @Override
-            public Class<String> busOfType() {
-                return String.class;
-            }
-        });
+                    override fun onBusNext(entity: Any) {
+                    }
+                })
 
 #### 解绑：
 
-	RxBus.getInstance().unregister(tag);
-	
+	RxBus.instance.unregister(tag)
 	
 ## License
 
