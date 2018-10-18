@@ -1,8 +1,6 @@
 package io.reactivex.network
 
 
-import android.support.v4.util.ArrayMap
-import android.support.v4.util.SimpleArrayMap
 import com.google.gson.Gson
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -30,7 +28,7 @@ class RxNetWork private constructor() {
         fun <T> observable(service: Class<T>): T = instance.retrofitFactory().create(service)
     }
 
-    private val arrayMap: ArrayMap<Any, Disposable> = ArrayMap()
+    private val arrayMap: HashMap<Any, Disposable> = HashMap()
     var timeoutTime = 15.toLong()
     var retryOnConnectionFailure = true
     var gson: Gson? = null
@@ -109,7 +107,7 @@ class RxNetWork private constructor() {
     }
 
     fun containsKey(key: Any): Boolean = arrayMap.containsKey(key)
-    fun getMap(): SimpleArrayMap<Any, Disposable> = arrayMap
+    fun getMap(): HashMap<Any, Disposable> = arrayMap
 
     private fun retrofitFactory(): Retrofit {
         if (okHttpClient == null) {

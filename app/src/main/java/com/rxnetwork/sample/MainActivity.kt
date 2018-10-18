@@ -2,16 +2,16 @@ package com.rxnetwork.sample
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.AppCompatButton
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.reflect.TypeToken
 import com.rxnetwork.sample.samplebus.A
 import com.socks.library.KLog
@@ -40,9 +40,9 @@ open class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>
         recyclerView.adapter = adapter
         RxBus.instance.register(BUS_TAG,
                 object : SimpleRxBusCallBack<String>() {
-                    override fun onBusNext(obj: String) {
-                        super.onBusNext(obj)
-                        textView.text = TextUtils.concat("RxBus Message:", obj)
+                    override fun onBusNext(entity: String) {
+                        super.onBusNext(entity)
+                        textView.text = TextUtils.concat("RxBus Message:", entity)
                     }
 
                     override fun busOfType(): Class<String> = String::class.java

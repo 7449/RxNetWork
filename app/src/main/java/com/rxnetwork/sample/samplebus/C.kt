@@ -1,8 +1,8 @@
 package com.rxnetwork.sample.samplebus
 
 import android.os.Bundle
-import android.support.v7.widget.AppCompatButton
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import com.rxnetwork.sample.R
 
 /**
@@ -17,7 +17,7 @@ class C : BaseActivity() {
         findViewById<AppCompatButton>(R.id.btn_simple).setOnClickListener { startActivity(D::class.java) }
     }
 
-    override fun onBusNext(t: String) {
-        Toast.makeText(applicationContext, javaClass.simpleName + " : : : " + t, Toast.LENGTH_SHORT).show()
+    override fun onBusNext(entity: String) {
+        Toast.makeText(applicationContext, javaClass.simpleName + " : : : " + entity, Toast.LENGTH_SHORT).show()
     }
 }

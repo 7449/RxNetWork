@@ -1,12 +1,11 @@
 package com.rxnetwork.sample
 
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
 /**
@@ -32,9 +31,6 @@ internal class MainAdapter(listModels: MutableList<ListModel>) : RecyclerView.Ad
         Glide
                 .with(holder.imageView.context)
                 .load(listModels!![position].titleImage)
-                .placeholder(R.mipmap.ic_launcher)
-                .error(R.mipmap.ic_launcher)
-                .centerCrop()
                 .into(holder.imageView)
         holder.textView.text = listModels!![position].title
     }

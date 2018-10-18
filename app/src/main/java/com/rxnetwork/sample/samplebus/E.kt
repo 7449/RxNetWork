@@ -1,7 +1,7 @@
 package com.rxnetwork.sample.samplebus
 
 import android.os.Bundle
-import android.support.v7.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatButton
 import com.rxnetwork.sample.R
 import io.reactivex.network.bus.RxBus
 

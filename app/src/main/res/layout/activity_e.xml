@@ -4,25 +4,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/A"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="a post" />
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/B"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="b post" />
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/C"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="c post" />
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/D"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,6 +1,5 @@
 package io.reactivex.network.bus
 
-import android.support.v4.util.ArrayMap
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
@@ -15,7 +14,7 @@ class RxBus private constructor() {
         val instance: RxBus by lazy { RxBus() }
     }
 
-    private val rxBusEventArrayMap: ArrayMap<Any, RxBusEvent> = ArrayMap()
+    private val rxBusEventArrayMap: HashMap<Any, RxBusEvent> = HashMap()
 
     fun post(obj: Any): Boolean = post(obj, obj)
 
