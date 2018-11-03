@@ -4,8 +4,6 @@ package io.reactivex.network.cache
 import com.google.gson.reflect.TypeToken
 import io.reactivex.ObservableTransformer
 import io.reactivex.annotations.NonNull
-import io.reactivex.network.cache.apply.impl.ApplyImpl
-import io.reactivex.network.cache.result.CacheResult
 import java.io.File
 
 /**

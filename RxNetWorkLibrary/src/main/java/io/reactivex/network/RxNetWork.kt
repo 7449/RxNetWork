@@ -1,20 +1,11 @@
 package io.reactivex.network
 
 
-import com.google.gson.Gson
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import retrofit2.CallAdapter
-import retrofit2.Converter
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -25,20 +16,15 @@ class RxNetWork private constructor() {
     companion object {
         private const val DEFAULT_TAG = "RxNetWork"
         val instance: RxNetWork by lazy { RxNetWork() }
-        fun <T> observable(service: Class<T>): T = instance.retrofitFactory().create(service)
+        fun initialization(rxNetOptionFactory: RxNetOptionFactory) {
+            instance.rxNetOptionFactory = rxNetOptionFactory
+        }
+
+        fun <T> observable(service: Class<T>): T = instance.rxNetOptionFactory.retrofit.create(service)
     }
 
     private val arrayMap: HashMap<Any, Disposable> = HashMap()
-    var timeoutTime = 15.toLong()
-    var retryOnConnectionFailure = true
-    var gson: Gson? = null
-    var baseUrl: String? = null
-    var okHttpClient: OkHttpClient? = null
-    var retrofit: Retrofit? = null
-    var converterFactory: Converter.Factory? = null
-    var adapterFactory: CallAdapter.Factory? = null
-    var logInterceptor: Interceptor? = null
-    var headerInterceptor: Interceptor? = null
+    private lateinit var rxNetOptionFactory: RxNetOptionFactory
 
     fun <M> getApi(mObservable: Observable<M>, listener: RxNetWorkListener<M>) {
         getApi(DEFAULT_TAG, mObservable, listener)
@@ -108,57 +94,4 @@ class RxNetWork private constructor() {
 
     fun containsKey(key: Any): Boolean = arrayMap.containsKey(key)
     fun getMap(): HashMap<Any, Disposable> = arrayMap
-
-    private fun retrofitFactory(): Retrofit {
-        if (okHttpClient == null) {
-            okHttpClient = initOkHttp()
-        }
-        if (converterFactory == null) {
-            rxNetWorkConverterFactory()
-        }
-        if (adapterFactory == null) {
-            rxNetWorkAdapterFactory()
-        }
-        if (retrofit == null) {
-            retrofit = initRetrofit()
-        }
-        return retrofit as Retrofit
-    }
-
-    private fun initRetrofit(): Retrofit {
-        return Retrofit.Builder()
-                .client(okHttpClient!!)
-                .baseUrl(baseUrl!!)
-                .addConverterFactory(converterFactory!!)
-                .addCallAdapterFactory(adapterFactory!!)
-                .build()
-    }
-
-    private fun initOkHttp(): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-        if (logInterceptor != null) {
-            builder.addInterceptor(logInterceptor!!)
-        }
-        if (headerInterceptor != null) {
-            builder.addInterceptor(headerInterceptor!!)
-        }
-        builder.connectTimeout(timeoutTime, TimeUnit.SECONDS)
-                .writeTimeout(timeoutTime, TimeUnit.SECONDS)
-                .readTimeout(timeoutTime, TimeUnit.SECONDS)
-        builder.retryOnConnectionFailure(retryOnConnectionFailure)
-        return builder.build()
-    }
-
-    private fun rxNetWorkConverterFactory() {
-        if (gson == null) {
-            gson = Gson()
-        }
-        converterFactory = GsonConverterFactory.create(gson!!)
-    }
-
-    private fun rxNetWorkAdapterFactory() {
-        adapterFactory = RxJava2CallAdapterFactory.create()
-    }
-
-
 }

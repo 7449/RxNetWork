@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-//apply plugin: 'com.novoda.bintray-release'
+apply plugin: "guru.stefma.bintrayrelease"
 
 android {
     compileSdkVersion 28
@@ -26,14 +26,18 @@ android {
     }
 }
 
-//publish {
-//    userOrg = 'ydevelop'
-//    groupId = 'com.ydevelop'
-//    artifactId = 'rxNetWork'
-//    publishVersion = '0.1.91'
-//    desc = 'this is rxnetwork'
-//    website = 'https://github.com/7449/RxNetWork'
-//}
+version = "0.1.91"
+group = "com.ydevelop"
+androidArtifact {
+    artifactId = "rxNetWork"
+    javadoc = false
+}
+publish {
+    userOrg = 'ydevelop'
+    desc = 'this is rxnetwork'
+    website = 'https://github.com/7449/RxNetWork'
+}
+
 dependencies {
     api 'io.reactivex.rxjava2:rxandroid:2.1.0'
     api 'io.reactivex.rxjava2:rxjava:2.2.2'

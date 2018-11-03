@@ -1,9 +1,11 @@
-package io.reactivex.network.bus
+package io.reactivex.network
 
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.annotations.NonNull
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 
 /**
  * by y on 2017/2/22.
@@ -91,4 +93,36 @@ class RxBus private constructor() {
     }
 
 
+}
+
+internal class RxBusEvent {
+    lateinit var subject: Subject<Any>
+    lateinit var disposable: DisposableObserver<*>
+}
+
+interface RxBusCallBack<T> {
+    fun onBusNext(entity: T)
+
+    fun onBusError(throwable: Throwable)
+
+    fun busOfType(): Class<T>
+}
+
+internal open class RxBusObserver<T> : DisposableObserver<T>() {
+    override fun onNext(@NonNull t: T) {
+    }
+
+    override fun onError(@NonNull e: Throwable) {
+    }
+
+    override fun onComplete() {
+    }
+}
+
+abstract class SimpleRxBusCallBack<T> : RxBusCallBack<T> {
+    override fun onBusNext(entity: T) {
+    }
+
+    override fun onBusError(throwable: Throwable) {
+    }
 }

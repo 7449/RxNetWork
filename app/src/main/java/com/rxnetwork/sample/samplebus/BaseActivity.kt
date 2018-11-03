@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
-import io.reactivex.network.bus.RxBus
-import io.reactivex.network.bus.RxBusCallBack
+import io.reactivex.network.RxBus
+import io.reactivex.network.RxBusCallBack
 
 /**
  * by y on 2017/5/22

@@ -11,8 +11,7 @@ android 网络请求简化库
 
 [https://github.com/7449/JsoupSample](https://github.com/7449/JsoupSample)
 
-> api 'com.ydevelop:rxNetWork:0.1.9'
-
+> api 'com.ydevelop:rxNetWork:0.1.91'
 
 > 建议初始化:
 

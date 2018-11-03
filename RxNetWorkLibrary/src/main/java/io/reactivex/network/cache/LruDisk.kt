@@ -3,7 +3,8 @@ package io.reactivex.network.cache
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.annotations.NonNull
-import io.reactivex.network.util.OkioUtils
+import io.reactivex.network.abort
+import io.reactivex.network.snapshots
 import okhttp3.internal.cache.DiskLruCache
 import okhttp3.internal.io.FileSystem
 import okio.Okio
@@ -48,10 +49,10 @@ class LruDisk internal constructor(path: File, version: Int, valueCount: Int, ma
             editor.commit()
             return true
         } catch (e: IOException) {
-            OkioUtils.abort(editor)
+            abort(editor)
             e.printStackTrace()
         }
-        OkioUtils.abort(editor)
+        abort(editor)
         return false
     }
 
@@ -67,7 +68,7 @@ class LruDisk internal constructor(path: File, version: Int, valueCount: Int, ma
         } catch (e: IOException) {
             e.printStackTrace()
         } finally {
-            OkioUtils.snapshot(snapshot)
+            snapshots(snapshot)
         }
         return null
     }

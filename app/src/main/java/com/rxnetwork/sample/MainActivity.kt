@@ -17,8 +17,8 @@ import com.rxnetwork.sample.samplebus.A
 import com.socks.library.KLog
 import io.reactivex.network.RxNetWork
 import io.reactivex.network.RxNetWorkListener
-import io.reactivex.network.bus.RxBus
-import io.reactivex.network.bus.SimpleRxBusCallBack
+import io.reactivex.network.RxBus
+import io.reactivex.network.SimpleRxBusCallBack
 import io.reactivex.network.cache.RxCache
 import java.util.*
 

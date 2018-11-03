@@ -3,7 +3,7 @@ package com.rxnetwork.sample.samplebus
 import android.os.Bundle
 import androidx.appcompat.widget.AppCompatButton
 import com.rxnetwork.sample.R
-import io.reactivex.network.bus.RxBus
+import io.reactivex.network.RxBus
 
 /**
  * by y on 2017/5/22
