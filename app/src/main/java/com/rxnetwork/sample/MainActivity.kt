@@ -15,12 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.reflect.TypeToken
 import com.rxnetwork.sample.samplebus.A
 import com.socks.library.KLog
+import io.reactivex.network.RxBus
 import io.reactivex.network.RxNetWork
 import io.reactivex.network.RxNetWorkListener
-import io.reactivex.network.RxBus
 import io.reactivex.network.SimpleRxBusCallBack
 import io.reactivex.network.cache.RxCache
-import java.util.*
 
 
 open class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>>, View.OnClickListener {
@@ -36,7 +35,7 @@ open class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>
         progressBar = findViewById(R.id.progress)
         textView = findViewById(R.id.bus_message)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
-        adapter = MainAdapter(ArrayList())
+        adapter = MainAdapter()
         recyclerView.adapter = adapter
         RxBus.instance.register(BUS_TAG,
                 object : SimpleRxBusCallBack<String>() {

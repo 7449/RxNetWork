@@ -3,58 +3,39 @@ package com.rxnetwork.sample
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.item.view.*
 
 /**
  * by y on 2017/2/27
  */
 
-internal class MainAdapter(listModels: MutableList<ListModel>) : RecyclerView.Adapter<MainAdapter.MainAdapterHolder>() {
+class MainAdapter : RecyclerView.Adapter<MainAdapter.MainAdapterHolder>() {
 
-    private var listModels: MutableList<ListModel>? = null
+    private var listModels: MutableList<ListModel> = ArrayList()
 
-    init {
-        this.listModels = listModels
-    }
-
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainAdapterHolder =
-            MainAdapterHolder(LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MainAdapterHolder(LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false))
 
     override fun onBindViewHolder(holder: MainAdapterHolder, position: Int) {
-        if (listModels == null) {
-            return
-        }
         Glide
-                .with(holder.imageView.context)
-                .load(listModels!![position].titleImage)
-                .into(holder.imageView)
-        holder.textView.text = listModels!![position].title
+                .with(holder.itemView.list_image.context)
+                .load(listModels[position].titleImage)
+                .into(holder.itemView.list_image)
+        holder.itemView.list_tv.text = listModels[position].title
     }
 
-    override fun getItemCount(): Int = listModels?.size ?: 0
+    override fun getItemCount(): Int = listModels.size
 
     fun addAll(data: List<ListModel>) {
-        if (listModels != null) {
-            listModels!!.addAll(data)
-            notifyDataSetChanged()
-        }
+        listModels.addAll(data)
+        notifyDataSetChanged()
     }
 
     fun clear() {
-        if (listModels != null) {
-            listModels!!.clear()
-            notifyDataSetChanged()
-        }
+        listModels.clear()
+        notifyDataSetChanged()
     }
 
-    internal inner class MainAdapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        val imageView: AppCompatImageView = itemView.findViewById(R.id.list_image) as AppCompatImageView
-        val textView: AppCompatTextView = itemView.findViewById(R.id.list_tv) as AppCompatTextView
-
-    }
+    class MainAdapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

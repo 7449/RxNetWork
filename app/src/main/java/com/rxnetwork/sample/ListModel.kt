@@ -5,15 +5,15 @@ package com.rxnetwork.sample
  */
 class ListModel {
 
-    var title: String? = null
-    var titleImage: String? = null
+    var title: String = ""
+    var titleImage: String = ""
     var slug: Int = 0
-    var author: Author? = null
+    lateinit var author: Author
 
     class Author {
-        var profileUrl: String? = null
-        var bio: String? = null
-        var name: String? = null
+        var profileUrl: String = ""
+        var bio: String = ""
+        var name: String = ""
 
     }
 }
