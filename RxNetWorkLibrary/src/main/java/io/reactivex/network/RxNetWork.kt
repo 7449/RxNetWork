@@ -26,7 +26,7 @@ class RxNetWork private constructor() {
     private val arrayMap: HashMap<Any, Disposable> = HashMap()
     private lateinit var rxNetOptionFactory: RxNetOptionFactory
 
-    fun <M> getApi(mObservable: Observable<M>, listener: RxNetWorkListener<M>) {
+    fun <M> getApi(mObservable: Observable<M>, listener: RxNetWorkListener<M>?) {
         getApi(DEFAULT_TAG, mObservable, listener)
     }
 

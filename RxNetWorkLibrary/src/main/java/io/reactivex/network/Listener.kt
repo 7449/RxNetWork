@@ -20,7 +20,6 @@ interface RxNetWorkListener<in T> {
     fun onNetWorkComplete()
 
     fun onNetWorkSuccess(data: T)
-
 }
 
 class RxNetWorkTask<T>(var data: T, var tag: Any)

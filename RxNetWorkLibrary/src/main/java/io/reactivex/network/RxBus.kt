@@ -95,7 +95,7 @@ class RxBus private constructor() {
 
 }
 
-internal class RxBusEvent {
+class RxBusEvent {
     lateinit var subject: Subject<Any>
     lateinit var disposable: DisposableObserver<*>
 }
@@ -108,7 +108,7 @@ interface RxBusCallBack<T> {
     fun busOfType(): Class<T>
 }
 
-internal open class RxBusObserver<T> : DisposableObserver<T>() {
+open class RxBusObserver<T> : DisposableObserver<T>() {
     override fun onNext(@NonNull t: T) {
     }
 

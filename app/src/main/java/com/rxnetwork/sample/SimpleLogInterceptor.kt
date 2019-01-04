@@ -10,7 +10,7 @@ import java.io.IOException
  * by y on 2017/2/22.
  */
 
-internal class SimpleLogInterceptor : Interceptor {
+class SimpleLogInterceptor : Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {

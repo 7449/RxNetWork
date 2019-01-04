@@ -17,12 +17,12 @@ import java.nio.charset.Charset
  * file缓存
  */
 
-class LruDisk internal constructor(path: File, version: Int, valueCount: Int, maxSize: Int) {
+class LruDisk(path: File, version: Int, valueCount: Int, maxSize: Int) {
 
     private var diskLruCache: DiskLruCache
     private val gson: Gson
 
-    internal val cacheSize: Long
+    val cacheSize: Long
         get() {
             return diskLruCache.size()
         }
@@ -60,9 +60,6 @@ class LruDisk internal constructor(path: File, version: Int, valueCount: Int, ma
         var snapshot: DiskLruCache.Snapshot? = null
         try {
             snapshot = diskLruCache.get(key.toString())
-            if (snapshot == null) {
-                return null
-            }
             val bufferedSource = Okio.buffer(snapshot.getSource(0))
             return gson.fromJson<T>(bufferedSource.readString(Charset.defaultCharset()), typeToken.type)
         } catch (e: IOException) {
@@ -73,7 +70,7 @@ class LruDisk internal constructor(path: File, version: Int, valueCount: Int, ma
         return null
     }
 
-    internal fun delete(@NonNull key: Any): Boolean {
+    fun delete(@NonNull key: Any): Boolean {
         try {
             return diskLruCache.remove(key.toString())
         } catch (e: IOException) {
@@ -82,7 +79,7 @@ class LruDisk internal constructor(path: File, version: Int, valueCount: Int, ma
         return false
     }
 
-    internal fun deleteAll() {
+    fun deleteAll() {
         try {
             diskLruCache.delete()
         } catch (e: IOException) {
@@ -90,7 +87,7 @@ class LruDisk internal constructor(path: File, version: Int, valueCount: Int, ma
         }
     }
 
-    internal fun containsKey(@NonNull key: Any): Boolean {
+    fun containsKey(@NonNull key: Any): Boolean {
         try {
             return diskLruCache.get(key.toString()) == null
         } catch (e: IOException) {
@@ -99,7 +96,7 @@ class LruDisk internal constructor(path: File, version: Int, valueCount: Int, ma
         return false
     }
 
-    internal fun onDestroy(): Boolean {
+    fun onDestroy(): Boolean {
         try {
             if (!diskLruCache.isClosed) {
                 diskLruCache.close()

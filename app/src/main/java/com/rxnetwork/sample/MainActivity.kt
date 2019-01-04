@@ -22,7 +22,7 @@ import io.reactivex.network.SimpleRxBusCallBack
 import io.reactivex.network.cache.RxCache
 
 
-open class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>>, View.OnClickListener {
+class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>>, View.OnClickListener {
 
     private lateinit var adapter: MainAdapter
     private lateinit var textView: AppCompatTextView
@@ -109,10 +109,5 @@ open class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>
 
     companion object {
         private const val BUS_TAG = "bus_tag"
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        RxCache.instance.onDestroy()
     }
 }

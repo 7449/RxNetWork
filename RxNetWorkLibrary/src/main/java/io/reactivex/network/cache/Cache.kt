@@ -10,7 +10,7 @@ class CacheResult<T>(var result: T, var key: Any, var type: CacheType) {
     }
 }
 
-internal enum class Type {
+enum class Type {
     CACHE_NETWORK, NETWORK
 }
 
