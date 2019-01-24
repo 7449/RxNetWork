@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.annotations.NonNull
 import io.reactivex.network.abort
-import io.reactivex.network.snapshots
 import okhttp3.internal.cache.DiskLruCache
 import okhttp3.internal.io.FileSystem
 import okio.Okio
@@ -60,12 +59,15 @@ class LruDisk(path: File, version: Int, valueCount: Int, maxSize: Int) {
         var snapshot: DiskLruCache.Snapshot? = null
         try {
             snapshot = diskLruCache.get(key.toString())
+            if (snapshot == null) {
+                return null
+            }
             val bufferedSource = Okio.buffer(snapshot.getSource(0))
             return gson.fromJson<T>(bufferedSource.readString(Charset.defaultCharset()), typeToken.type)
         } catch (e: IOException) {
             e.printStackTrace()
         } finally {
-            snapshots(snapshot)
+            snapshot?.close()
         }
         return null
     }

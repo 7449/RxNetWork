@@ -22,7 +22,7 @@ import io.reactivex.network.SimpleRxBusCallBack
 import io.reactivex.network.cache.RxCache
 
 
-class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>>, View.OnClickListener {
+class MainActivity : AppCompatActivity(), RxNetWorkListener<ListModel>, View.OnClickListener {
 
     private lateinit var adapter: MainAdapter
     private lateinit var textView: AppCompatTextView
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>>, Vi
                 val daily = RxNetWork
                         .observable(Api.ZLService::class.java)
                         .getList("daily", 20, 0)
-                        .compose(RxCache.instance.transformerCN("cache", true, object : TypeToken<List<ListModel>>() {
+                        .compose(RxCache.instance.transformerCN("cache", true, object : TypeToken<ListModel>() {
 
                         }))
                         .map { listCacheResult ->
@@ -98,8 +98,8 @@ class MainActivity : AppCompatActivity(), RxNetWorkListener<List<ListModel>>, Vi
         progressBar.visibility = View.GONE
     }
 
-    override fun onNetWorkSuccess(data: List<ListModel>) {
-        adapter.addAll(data)
+    override fun onNetWorkSuccess(data: ListModel) {
+        adapter.addAll(data.data)
     }
 
     override fun onBackPressed() {

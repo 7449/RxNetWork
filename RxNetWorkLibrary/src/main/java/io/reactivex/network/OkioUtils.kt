@@ -16,7 +16,3 @@ fun abort(editor: DiskLruCache.Editor?) {
         }
     }
 }
-
-fun snapshots(snapshot: DiskLruCache.Snapshot?) {
-    snapshot?.close()
-}

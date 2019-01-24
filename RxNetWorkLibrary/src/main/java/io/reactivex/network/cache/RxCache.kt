@@ -54,7 +54,7 @@ class RxCache private constructor() {
     /**
      * 优先级： 文件 --> 网络
      *
-     * @param network :true 有网的情况下，获取网络数据并缓存，没网的情况再获取缓存
+     * @param network :true 有网的情况下，获取网络数据并缓存，没网的情况再获取缓存(网络状态)
      */
     fun <T> transformerCN(key: Any, network: Boolean, typeToken: TypeToken<T>): ObservableTransformer<T, CacheResult<T>> = transformer(key, Type.CACHE_NETWORK, typeToken, network)
 

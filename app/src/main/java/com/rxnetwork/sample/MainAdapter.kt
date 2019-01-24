@@ -13,21 +13,21 @@ import kotlinx.android.synthetic.main.item.view.*
 
 class MainAdapter : RecyclerView.Adapter<MainAdapter.MainAdapterHolder>() {
 
-    private var listModels: MutableList<ListModel> = ArrayList()
+    private var listModels: MutableList<DataModel> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MainAdapterHolder(LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false))
 
     override fun onBindViewHolder(holder: MainAdapterHolder, position: Int) {
         Glide
                 .with(holder.itemView.list_image.context)
-                .load(listModels[position].titleImage)
+                .load(listModels[position].title_image)
                 .into(holder.itemView.list_image)
         holder.itemView.list_tv.text = listModels[position].title
     }
 
     override fun getItemCount(): Int = listModels.size
 
-    fun addAll(data: List<ListModel>) {
+    fun addAll(data: List<DataModel>) {
         listModels.addAll(data)
         notifyDataSetChanged()
     }

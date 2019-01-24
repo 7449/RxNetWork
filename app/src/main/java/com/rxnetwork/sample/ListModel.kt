@@ -4,16 +4,10 @@ package com.rxnetwork.sample
  * by y on 2016/8/7.
  */
 class ListModel {
+    lateinit var data: List<DataModel>
+}
 
+class DataModel {
     var title: String = ""
-    var titleImage: String = ""
-    var slug: Int = 0
-    lateinit var author: Author
-
-    class Author {
-        var profileUrl: String = ""
-        var bio: String = ""
-        var name: String = ""
-
-    }
+    var title_image: String = ""
 }
