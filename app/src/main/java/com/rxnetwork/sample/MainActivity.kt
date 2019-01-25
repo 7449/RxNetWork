@@ -21,7 +21,6 @@ import io.reactivex.network.RxNetWorkListener
 import io.reactivex.network.SimpleRxBusCallBack
 import io.reactivex.network.cache.RxCache
 
-
 class MainActivity : AppCompatActivity(), RxNetWorkListener<ListModel>, View.OnClickListener {
 
     private lateinit var adapter: MainAdapter
@@ -63,7 +62,6 @@ class MainActivity : AppCompatActivity(), RxNetWorkListener<ListModel>, View.OnC
                         .observable(Api.ZLService::class.java)
                         .getList("daily", 20, 0)
                         .compose(RxCache.instance.transformerCN("cache", true, object : TypeToken<ListModel>() {
-
                         }))
                         .map { listCacheResult ->
                             Log.i("RxCache", listCacheResult.type.toString() + "")
@@ -91,7 +89,7 @@ class MainActivity : AppCompatActivity(), RxNetWorkListener<ListModel>, View.OnC
 
     override fun onNetWorkError(e: Throwable) {
         progressBar.visibility = View.GONE
-        Toast.makeText(applicationContext, "net work error:" + e.toString(), Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, "net work error:$e", Toast.LENGTH_SHORT).show()
     }
 
     override fun onNetWorkComplete() {
