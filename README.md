@@ -11,7 +11,9 @@ android 网络请求简化库
 
 [https://github.com/7449/JsoupSample](https://github.com/7449/JsoupSample)
 
-> implementation 'com.ydevelop:rxNetWork:0.1.93'
+> 
+    
+    implementation 'com.ydevelop:rxNetWork:0.1.93'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
