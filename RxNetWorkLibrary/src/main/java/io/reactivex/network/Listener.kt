@@ -26,7 +26,7 @@ interface RxNetWorkTaskListener<T> : RxNetWorkListener<T> {
     val tag: Any
 }
 
-class SimpleRxNetWorkListenerDLS<T> {
+class SimpleRxNetWorkListenerKt<T> {
     private var onNetWorkStart: (() -> Unit)? = null
     private var onNetWorkError: ((e: Throwable) -> Unit)? = null
     private var onNetWorkComplete: (() -> Unit)? = null
@@ -81,7 +81,7 @@ interface RxNetOptionFactory {
     val headerInterceptor: Interceptor?
 }
 
-class SimpleRxNetOptionFactoryDLS {
+class SimpleRxNetOptionFactoryKt {
 
     private var superBaseUrl: String = ""
     private var superTimeoutTime: Long = 15

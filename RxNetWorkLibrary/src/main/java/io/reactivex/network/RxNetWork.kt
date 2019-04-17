@@ -7,8 +7,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 
-fun <T> Observable<T>.getApi(tag: Any, rxNetWorkListenerDLS: SimpleRxNetWorkListenerDLS<T>.() -> Unit) {
-    RxNetWork.getApi(tag, this, rxNetWorkListenerDLS)
+fun <T> Observable<T>.getApi(tag: Any, rxNetWorkListenerKt: SimpleRxNetWorkListenerKt<T>.() -> Unit) {
+    RxNetWork.getApi(tag, this, rxNetWorkListenerKt)
 }
 
 fun <T> Observable<T>.getApi(tag: Any, rxNetWorkListener: RxNetWorkListener<T>) {
@@ -23,7 +23,7 @@ class RxNetWork private constructor() {
         val instance: RxNetWork by lazy { RxNetWork() }
 
         @JvmStatic
-        fun initOption(rxNetOptionFactoryDLS: SimpleRxNetOptionFactoryDLS.() -> Unit) = initialization(SimpleRxNetOptionFactoryDLS().also(rxNetOptionFactoryDLS).build())
+        fun initOption(rxNetOptionFactoryKt: SimpleRxNetOptionFactoryKt.() -> Unit) = initialization(SimpleRxNetOptionFactoryKt().also(rxNetOptionFactoryKt).build())
 
         @JvmStatic
         fun initialization(rxNetOptionFactory: RxNetOptionFactory) {
@@ -31,8 +31,8 @@ class RxNetWork private constructor() {
         }
 
         @JvmStatic
-        fun <T> getApi(tag: Any, observable: Observable<T>, rxNetWorkListenerDLS: SimpleRxNetWorkListenerDLS<T>.() -> Unit) {
-            instance.getApi(tag, observable, SimpleRxNetWorkListenerDLS<T>().also(rxNetWorkListenerDLS).build())
+        fun <T> getApi(tag: Any, observable: Observable<T>, rxNetWorkListenerKt: SimpleRxNetWorkListenerKt<T>.() -> Unit) {
+            instance.getApi(tag, observable, SimpleRxNetWorkListenerKt<T>().also(rxNetWorkListenerKt).build())
         }
 
         @JvmStatic

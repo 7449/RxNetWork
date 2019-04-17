@@ -17,7 +17,7 @@ interface CustomizeTransformerCall<T> {
     fun applyCustomize(key: Any, upstream: Observable<T>): ObservableSource<CacheResult<T>>
 }
 
-class SimpleCustomizeTransformerCallDLS<T> {
+class SimpleCustomizeTransformerCallKt<T> {
 
     private var applyCustomize: ((key: Any, upstream: Observable<T>) -> ObservableSource<CacheResult<T>>)? = null
 

@@ -13,7 +13,7 @@ class RxBus private constructor() {
         internal val instance: RxBus by lazy { RxBus() }
 
         @JvmStatic
-        fun <T> register(any: Any, rxBusCallbackDLS: SimpleRxBusCallbackDLS<T>.() -> Unit) = instance.register(any, SimpleRxBusCallbackDLS<T>().also(rxBusCallbackDLS).build())
+        fun <T> register(any: Any, rxBusCallbackKt: SimpleRxBusCallbackKt<T>.() -> Unit) = instance.register(any, SimpleRxBusCallbackKt<T>().also(rxBusCallbackKt).build())
 
         @JvmStatic
         fun postBus(tag: Any, obj: Any) = instance.post(tag, obj)
@@ -118,7 +118,7 @@ interface RxBusCallBack<T> {
     fun busOfType(): Class<T> = javaClass.genericSuperclass as Class<T>
 }
 
-class SimpleRxBusCallbackDLS<T> {
+class SimpleRxBusCallbackKt<T> {
     private var onBusNext: ((entity: T) -> Unit)? = null
     private var onBusError: ((throwable: Throwable) -> Unit)? = null
     private var busOfType: (() -> Class<T>)? = null
