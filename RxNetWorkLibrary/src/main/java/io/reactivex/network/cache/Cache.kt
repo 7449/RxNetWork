@@ -2,7 +2,6 @@ package io.reactivex.network.cache
 
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
-import io.reactivex.annotations.NonNull
 
 class CacheResult<T>(var result: T, var key: Any, var type: CacheType) {
     enum class CacheType {
@@ -14,6 +13,25 @@ enum class Type {
     CACHE_NETWORK, NETWORK
 }
 
-interface CustomizeTransformerCall {
-    fun <T> applyCustomize(@NonNull key: Any, upstream: Observable<T>): ObservableSource<CacheResult<T>>
+interface CustomizeTransformerCall<T> {
+    fun applyCustomize(key: Any, upstream: Observable<T>): ObservableSource<CacheResult<T>>
 }
+
+class SimpleCustomizeTransformerCallDLS<T> {
+
+    private var applyCustomize: ((key: Any, upstream: Observable<T>) -> ObservableSource<CacheResult<T>>)? = null
+
+    fun applyCustomize(applyCustomize: (key: Any, upstream: Observable<T>) -> ObservableSource<CacheResult<T>>) {
+        this.applyCustomize = applyCustomize
+    }
+
+    internal fun build(): CustomizeTransformerCall<T> {
+        return object : CustomizeTransformerCall<T> {
+            override fun applyCustomize(key: Any, upstream: Observable<T>): ObservableSource<CacheResult<T>> {
+                return applyCustomize?.invoke(key, upstream)
+                        ?: throw  KotlinNullPointerException("check applyCustomize")
+            }
+        }
+    }
+}
+

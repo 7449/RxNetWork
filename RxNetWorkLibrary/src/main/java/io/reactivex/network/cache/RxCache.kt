@@ -5,22 +5,23 @@ import com.google.gson.reflect.TypeToken
 import io.reactivex.ObservableTransformer
 import java.io.File
 
-/**
- * by y on 20/09/2017.
- */
 
 class RxCache private constructor() {
 
     companion object {
+        @JvmStatic
         val instance: RxCache by lazy { RxCache() }
+
+        @JvmStatic
+        fun <T> customizeTransformer(key: Any, simpleCustomizeTransformerCallDLS: SimpleCustomizeTransformerCallDLS<T>.() -> Unit): ObservableTransformer<T, CacheResult<T>> {
+            return instance.customizeTransformer(key, SimpleCustomizeTransformerCallDLS<T>().also(simpleCustomizeTransformerCallDLS).build())
+        }
     }
 
     private val apply: ApplyImpl = ApplyImpl()
     private lateinit var lruDisk: LruDisk
 
-    fun setDiskBuilder(diskBuilder: DiskBuilder) = apply {
-        lruDisk = LruDisk(diskBuilder.file, diskBuilder.version, diskBuilder.valueCount, diskBuilder.maxSize)
-    }
+    fun setDiskBuilder(diskBuilder: DiskBuilder) = apply { lruDisk = LruDisk(diskBuilder.file, diskBuilder.version, diskBuilder.valueCount, diskBuilder.maxSize) }
 
     class DiskBuilder {
         var file: File
@@ -63,8 +64,7 @@ class RxCache private constructor() {
      */
     fun <T> transformerN(): ObservableTransformer<T, CacheResult<T>> = transformer("", Type.NETWORK, null, false)
 
-    fun <T> customizeTransformer(key: Any, customizeTransformerCall: CustomizeTransformerCall): ObservableTransformer<T, CacheResult<T>> = ObservableTransformer { upstream -> apply.applyCustomize(key, upstream, customizeTransformerCall) }
-
+    fun <T> customizeTransformer(key: Any, customizeTransformerCall: CustomizeTransformerCall<T>): ObservableTransformer<T, CacheResult<T>> = ObservableTransformer { upstream -> apply.applyCustomize(key, upstream, customizeTransformerCall) }
 
     private fun <T> transformer(key: Any, type: Type, typeToken: TypeToken<T>?, network: Boolean): ObservableTransformer<T, CacheResult<T>> {
         return ObservableTransformer { upstream ->
@@ -73,7 +73,6 @@ class RxCache private constructor() {
                     typeToken?.let {
                         return@ObservableTransformer apply.applyCacheNetWork(key, upstream, lruDisk, typeToken, network)
                     } ?: throw NullPointerException("init TypeToken")
-
                 }
                 Type.NETWORK -> return@ObservableTransformer apply.apply(key, upstream, lruDisk, false)
             }
@@ -90,5 +89,4 @@ class RxCache private constructor() {
 
     val cacheSize: Long
         get() = lruDisk.cacheSize
-
 }

@@ -7,28 +7,49 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 
+fun <T> Observable<T>.getApi(tag: Any, rxNetWorkListenerDLS: SimpleRxNetWorkListenerDLS<T>.() -> Unit) {
+    RxNetWork.getApi(tag, this, rxNetWorkListenerDLS)
+}
 
-/**
- * by y on 2017/2/22.
- */
+fun <T> Observable<T>.getApi(tag: Any, rxNetWorkListener: RxNetWorkListener<T>) {
+    RxNetWork.instance.getApi(tag, this, rxNetWorkListener)
+}
+
 class RxNetWork private constructor() {
 
     companion object {
-        private const val DEFAULT_TAG = "RxNetWork"
+
+        @JvmStatic
         val instance: RxNetWork by lazy { RxNetWork() }
+
+        @JvmStatic
+        fun initOption(rxNetOptionFactoryDLS: SimpleRxNetOptionFactoryDLS.() -> Unit) = initialization(SimpleRxNetOptionFactoryDLS().also(rxNetOptionFactoryDLS).build())
+
+        @JvmStatic
         fun initialization(rxNetOptionFactory: RxNetOptionFactory) {
             instance.rxNetOptionFactory = rxNetOptionFactory
         }
 
+        @JvmStatic
+        fun <T> getApi(tag: Any, observable: Observable<T>, rxNetWorkListenerDLS: SimpleRxNetWorkListenerDLS<T>.() -> Unit) {
+            instance.getApi(tag, observable, SimpleRxNetWorkListenerDLS<T>().also(rxNetWorkListenerDLS).build())
+        }
+
+        @JvmStatic
+        fun cancelX(tag: Any) = instance.cancel(tag)
+
+        @JvmStatic
+        fun cancelAllX() = instance.cancelAll()
+
+        @JvmStatic
+        fun containsKeyX(key: Any): Boolean = instance.containsKey(key)
+
+        @JvmStatic
         fun <T> observable(service: Class<T>): T = instance.rxNetOptionFactory.retrofit.create(service)
     }
 
     private val arrayMap: HashMap<Any, Disposable> = HashMap()
     private lateinit var rxNetOptionFactory: RxNetOptionFactory
-
-    fun <M> getApi(mObservable: Observable<M>, listener: RxNetWorkListener<M>?) {
-        getApi(DEFAULT_TAG, mObservable, listener)
-    }
 
     fun <M> getApi(tag: Any, observable: Observable<M>, listener: RxNetWorkListener<M>?) {
         listener?.onNetWorkStart()
@@ -53,7 +74,7 @@ class RxNetWork private constructor() {
 
     fun <M> getApiTask(tag: Any, observable: Observable<M>, listener: RxNetWorkTaskListener<RxNetWorkTask<M>>) {
         listener.onNetWorkStart()
-        val disposable = observable
+        arrayMap[tag] = observable
                 .map { t -> RxNetWorkTask(t, listener.tag) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -71,19 +92,14 @@ class RxNetWork private constructor() {
                         listener.onNetWorkComplete()
                     }
                 })
-        arrayMap[tag] = disposable
     }
 
     fun cancel(tag: Any) {
         val disposable = arrayMap[tag]
         if (disposable != null && !disposable.isDisposed) {
             disposable.dispose()
-            arrayMap.remove(tag)
         }
-    }
-
-    fun cancelDefaultKey() {
-        cancel(DEFAULT_TAG)
+        arrayMap.remove(tag)
     }
 
     fun cancelAll() {
@@ -93,5 +109,6 @@ class RxNetWork private constructor() {
     }
 
     fun containsKey(key: Any): Boolean = arrayMap.containsKey(key)
+
     fun getMap(): HashMap<Any, Disposable> = arrayMap
 }

@@ -1,24 +1,34 @@
 package io.reactivex.network
 
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.annotations.NonNull
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 
-/**
- * by y on 2017/2/22.
- */
 class RxBus private constructor() {
 
     companion object {
-        val instance: RxBus by lazy { RxBus() }
+        @JvmStatic
+        internal val instance: RxBus by lazy { RxBus() }
+
+        @JvmStatic
+        fun <T> register(any: Any, rxBusCallbackDLS: SimpleRxBusCallbackDLS<T>.() -> Unit) = instance.register(any, SimpleRxBusCallbackDLS<T>().also(rxBusCallbackDLS).build())
+
+        @JvmStatic
+        fun postBus(tag: Any, obj: Any) = instance.post(tag, obj)
+
+        @JvmStatic
+        fun unregisterBus(tag: Any) = instance.unregister(tag)
+
+        @JvmStatic
+        fun unregisterAllBus() = instance.unregisterAll()
+
+        @JvmStatic
+        fun disposeBus(tag: Any): Boolean = instance.dispose(tag)
     }
 
     private val rxBusEventArrayMap: HashMap<Any, RxBusEvent> = HashMap()
-
-    fun post(obj: Any): Boolean = post(obj, obj)
 
     fun post(tag: Any, obj: Any): Boolean {
         val rxBusEvent = rxBusEventArrayMap[tag] ?: return true
@@ -32,7 +42,7 @@ class RxBus private constructor() {
      * @param tag      标志
      * @param callBack 回调
      */
-    fun <T> register(tag: Any, callBack: RxBusCallBack<T>): DisposableObserver<*> {
+    fun <T> register(tag: Any, callBack: RxBusCallBack<T>) {
         var rxBusEvent = rxBusEventArrayMap[tag]
         if (rxBusEvent == null) {
             rxBusEvent = RxBusEvent()
@@ -41,20 +51,20 @@ class RxBus private constructor() {
                     .ofType(callBack.busOfType())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(object : RxBusObserver<T>() {
-                        override fun onError(@io.reactivex.annotations.NonNull e: Throwable) {
-                            super.onError(e)
+                    .subscribeWith(object : DisposableObserver<T>() {
+                        override fun onComplete() {
+                        }
+
+                        override fun onError(e: Throwable) {
                             callBack.onBusError(e)
                         }
 
-                        override fun onNext(@io.reactivex.annotations.NonNull t: T) {
-                            super.onNext(t)
+                        override fun onNext(t: T) {
                             callBack.onBusNext(t)
                         }
                     })
             rxBusEventArrayMap[tag] = rxBusEvent
         }
-        return rxBusEvent.disposable
     }
 
     /**
@@ -65,15 +75,11 @@ class RxBus private constructor() {
      */
     fun unregister(tag: Any): Boolean {
         val rxBusEvent = rxBusEventArrayMap[tag] ?: return true
-        val subject = rxBusEvent.subject
         val disposable = rxBusEvent.disposable
         if (!disposable.isDisposed) {
             disposable.dispose()
         }
-        if (!subject.hasObservers()) {
-            rxBusEventArrayMap.remove(tag)
-            return true
-        }
+        rxBusEventArrayMap.remove(tag)
         return false
     }
 
@@ -92,6 +98,9 @@ class RxBus private constructor() {
         return true
     }
 
+    fun dispose(tag: Any): Boolean {
+        return rxBusEventArrayMap[tag]?.disposable?.isDisposed ?: true
+    }
 
 }
 
@@ -100,29 +109,45 @@ class RxBusEvent {
     lateinit var disposable: DisposableObserver<*>
 }
 
+
 interface RxBusCallBack<T> {
     fun onBusNext(entity: T)
 
-    fun onBusError(throwable: Throwable)
+    fun onBusError(throwable: Throwable) = Unit
 
-    fun busOfType(): Class<T>
+    fun busOfType(): Class<T> = javaClass.genericSuperclass as Class<T>
 }
 
-open class RxBusObserver<T> : DisposableObserver<T>() {
-    override fun onNext(@NonNull t: T) {
+class SimpleRxBusCallbackDLS<T> {
+    private var onBusNext: ((entity: T) -> Unit)? = null
+    private var onBusError: ((throwable: Throwable) -> Unit)? = null
+    private var busOfType: (() -> Class<T>)? = null
+
+    fun onBusNext(onBusNext: (entity: T) -> Unit) {
+        this.onBusNext = onBusNext
     }
 
-    override fun onError(@NonNull e: Throwable) {
+    fun onBusError(onBusError: (throwable: Throwable) -> Unit) {
+        this.onBusError = onBusError
     }
 
-    override fun onComplete() {
-    }
-}
-
-abstract class SimpleRxBusCallBack<T> : RxBusCallBack<T> {
-    override fun onBusNext(entity: T) {
+    fun busOfType(busOfType: () -> Class<T>) {
+        this.busOfType = busOfType
     }
 
-    override fun onBusError(throwable: Throwable) {
+    internal fun build(): RxBusCallBack<T> {
+        return object : RxBusCallBack<T> {
+            override fun onBusNext(entity: T) {
+                onBusNext?.invoke(entity)
+            }
+
+            override fun onBusError(throwable: Throwable) {
+                onBusError?.invoke(throwable)
+            }
+
+            override fun busOfType(): Class<T> {
+                return busOfType?.invoke() ?: super.busOfType()
+            }
+        }
     }
 }

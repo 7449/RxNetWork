@@ -3,14 +3,13 @@ package com.rxnetwork.sample
 import android.app.Application
 import io.reactivex.network.RxNetOptionFactory
 import io.reactivex.network.RxNetWork
-import io.reactivex.network.SimpleRxNetOptionFactory
 import io.reactivex.network.cache.RxCache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.CallAdapter
 import retrofit2.Converter
 import retrofit2.Retrofit
-import retrofit2.converter.jackson.JacksonConverterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * by y on 2017/2/27
@@ -19,7 +18,12 @@ import retrofit2.converter.jackson.JacksonConverterFactory
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        RxNetWork.initialization(SimpleRxNetOptionFactory(Api.ZL_BASE_API, JacksonConverterFactory.create()))
+//        RxNetWork.initialization(SimpleRxNetOptionFactory(Api.ZL_BASE_API, JacksonConverterFactory.create()))
+        RxNetWork.initOption {
+            superBaseUrl { Api.ZL_BASE_API }
+            superConverterFactory { GsonConverterFactory.create() }
+            superLogInterceptor { SimpleLogInterceptor() }
+        }
         RxCache
                 .instance
                 .setDiskBuilder(RxCache.DiskBuilder(FileUtils.getDiskCacheDir(this, "RxCache")))

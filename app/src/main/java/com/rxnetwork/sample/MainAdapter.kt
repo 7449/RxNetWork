@@ -20,7 +20,7 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.MainAdapterHolder>() {
     override fun onBindViewHolder(holder: MainAdapterHolder, position: Int) {
         Glide
                 .with(holder.itemView.list_image.context)
-                .load(listModels[position].title_image)
+                .load(listModels[position].image)
                 .into(holder.itemView.list_image)
         holder.itemView.list_tv.text = listModels[position].title
     }

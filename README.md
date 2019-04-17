@@ -13,7 +13,7 @@ android 网络请求简化库
 
 > 
     
-    implementation 'com.ydevelop:rxNetWork:0.1.93'
+    implementation 'com.ydevelop:rxNetWork:0.1.94'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
@@ -30,10 +30,12 @@ android 网络请求简化库
     
         override fun onCreate() {
             super.onCreate()
-            RxNetWork.initialization(SimpleRxNetOptionFactory(BASE_API, JacksonConverterFactory.create()))
-            RxCache
-                    .instance
-                    .setDiskBuilder(RxCache.DiskBuilder(FileUtils.getDiskCacheDir(context, "RxCache")))
+            RxNetWork.initOption {
+                superBaseUrl {  }
+                superConverterFactory { GsonConverterFactory.create() }
+                superLogInterceptor { SimpleLogInterceptor() }
+            }
+            RxCache.setDiskBuilder(RxCache.DiskBuilder(FileUtils.getDiskCacheDir(context, "RxCache")))
         }
     }
 
@@ -57,24 +59,17 @@ CallAdapter.Factory
 
 * 取消网络请求：
 
-	    RxNetWork.instance.cancel()
+	    RxNetWork.cancel()
 
-
-        RxNetWork.instance.getApi(tag,
-                RxNetWork.observable(),
-                object : RxNetWorkListener<Any> {
-                    override fun onNetWorkStart() {
-                    }
-
-                    override fun onNetWorkError(e: Throwable) {
-                    }
-
-                    override fun onNetWorkComplete() {
-                    }
-
-                    override fun onNetWorkSuccess(data: Any) {
-                    }
-                })
+        RxNetWork
+                .observable(class.java)
+                .get()
+                .getApi(javaClass.simpleName) {
+                    onNetWorkSuccess {}
+                    onNetWorkComplete {}
+                    onNetWorkError {}
+                    onNetWorkStart {}
+                }
 
 > RxCache
 
@@ -91,38 +86,29 @@ CallAdapter.Factory
 true ： 有网的情况下 网络优先，否则 缓存优先
 
     Observable
-              .compose(RxCache.getInstance().transformerCN("", true, new TypeToken<Any>() {
-                                      }))
+              .compose(RxCache.getInstance().transformerCN("", true, new TypeToken<Any>() {}))
 
 
 
-> 配置Header:
+> 配置Header and Log:
 
 如果使用默认的`okhttp`,配置Header需要如下操作：
 
-        RxNetWork.initialization(object : SimpleRxNetOptionFactory(URL, JacksonConverterFactory.create()) {
-            override val headerInterceptor: Interceptor? = SimpleHeaderInterceptor()
-        })
-
-> 配置Log
-
-如果使用默认的`okhttp`,配置Log需要如下操作：
-
-        RxNetWork.initialization(object : SimpleRxNetOptionFactory(URL, JacksonConverterFactory.create()) {
-            override val logInterceptor: Interceptor? = SimpleLogInterceptor()
-        })
+        RxNetWork.initOption {
+            superLogInterceptor { }
+            superHeaderInterceptor {  }
+        }
 
 > RxBus使用：
 
 #### 发送消息：
 
-        RxBus.instance.post(tag,message)
-        RxBus.instance.post(tag)
+        RxBus.post(tag,message)
+        RxBus.post(tag)
 
 #### 注册消息体：
 
-        RxBus.instance
-                .register(tag,object :RxBusCallBack<Any>{
+        RxBus.register(tag,object :RxBusCallBack<Any>{
                     override fun onBusError(throwable: Throwable) {
                     }
 
@@ -135,7 +121,7 @@ true ： 有网的情况下 网络优先，否则 缓存优先
 
 #### 解绑：
 
-	RxBus.instance.unregister(tag)
+	RxBus.unregister(tag)
 	
 ## License
 

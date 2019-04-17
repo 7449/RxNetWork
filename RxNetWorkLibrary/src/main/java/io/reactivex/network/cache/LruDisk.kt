@@ -2,8 +2,6 @@ package io.reactivex.network.cache
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.reactivex.annotations.NonNull
-import io.reactivex.network.abort
 import okhttp3.internal.cache.DiskLruCache
 import okhttp3.internal.io.FileSystem
 import okio.Okio
@@ -34,7 +32,7 @@ class LruDisk(path: File, version: Int, valueCount: Int, maxSize: Int) {
         diskLruCache = DiskLruCache.create(FileSystem.SYSTEM, path, version, valueCount, maxSize.toLong())
     }
 
-    fun <T> insert(@NonNull key: Any, value: T): Boolean {
+    fun <T> insert(key: Any, value: T): Boolean {
         delete(key)
         var editor: DiskLruCache.Editor? = null
         try {
@@ -48,14 +46,14 @@ class LruDisk(path: File, version: Int, valueCount: Int, maxSize: Int) {
             editor.commit()
             return true
         } catch (e: IOException) {
-            abort(editor)
+            editor?.abort()
             e.printStackTrace()
         }
-        abort(editor)
+        editor?.abort()
         return false
     }
 
-    fun <T> query(@NonNull key: Any, typeToken: TypeToken<T>): T? {
+    fun <T> query(key: Any, typeToken: TypeToken<T>): T? {
         var snapshot: DiskLruCache.Snapshot? = null
         try {
             snapshot = diskLruCache.get(key.toString())
@@ -72,7 +70,7 @@ class LruDisk(path: File, version: Int, valueCount: Int, maxSize: Int) {
         return null
     }
 
-    fun delete(@NonNull key: Any): Boolean {
+    fun delete(key: Any): Boolean {
         try {
             return diskLruCache.remove(key.toString())
         } catch (e: IOException) {
@@ -89,7 +87,7 @@ class LruDisk(path: File, version: Int, valueCount: Int, maxSize: Int) {
         }
     }
 
-    fun containsKey(@NonNull key: Any): Boolean {
+    fun containsKey(key: Any): Boolean {
         try {
             return diskLruCache.get(key.toString()) == null
         } catch (e: IOException) {
