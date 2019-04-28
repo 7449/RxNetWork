@@ -10,7 +10,7 @@ class RxBus private constructor() {
 
     companion object {
         @JvmStatic
-        internal val instance: RxBus by lazy { RxBus() }
+        val instance: RxBus by lazy { RxBus() }
 
         @JvmStatic
         fun <T> register(any: Any, rxBusCallbackKt: SimpleRxBusCallbackKt<T>.() -> Unit) = instance.register(any, SimpleRxBusCallbackKt<T>().also(rxBusCallbackKt).build())
