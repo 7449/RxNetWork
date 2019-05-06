@@ -7,14 +7,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 
-fun <T> Observable<T>.getApi(tag: Any, rxNetWorkListenerKt: SimpleRxNetWorkListenerKt<T>.() -> Unit) {
-    RxNetWork.getApi(tag, this, rxNetWorkListenerKt)
-}
-
-fun <T> Observable<T>.getApi(tag: Any, rxNetWorkListener: RxNetWorkListener<T>) {
-    RxNetWork.instance.getApi(tag, this, rxNetWorkListener)
-}
-
 class RxNetWork private constructor() {
 
     companion object {
@@ -36,10 +28,10 @@ class RxNetWork private constructor() {
         }
 
         @JvmStatic
-        fun cancelX(tag: Any) = instance.cancel(tag)
+        fun cancelTag(tag: Any) = instance.cancel(tag)
 
         @JvmStatic
-        fun cancelAllX() = instance.cancelAll()
+        fun cancelAllTag() = instance.cancelAll()
 
         @JvmStatic
         fun containsKeyX(key: Any): Boolean = instance.containsKey(key)
