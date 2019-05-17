@@ -31,6 +31,15 @@ class RxNetWork private constructor() {
         fun cancelTag(tag: Any) = instance.cancel(tag)
 
         @JvmStatic
+        fun cancelListTag(vararg tags: Any?) = run {
+            for (tag in tags) {
+                if (tag != null) {
+                    cancelTag(tag)
+                }
+            }
+        }
+
+        @JvmStatic
         fun cancelAllTag() = instance.cancelAll()
 
         @JvmStatic

@@ -13,7 +13,7 @@ android {
     }
 }
 
-version = "0.1.97"
+version = "0.1.98"
 group = "com.ydevelop"
 androidArtifact {
     artifactId = "rxNetWork"
@@ -30,5 +30,6 @@ dependencies {
     compileOnly 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
     compileOnly 'com.google.code.gson:gson:2.8.5'
     compileOnly "org.jsoup:jsoup:1.11.3"
+    compileOnly 'androidx.appcompat:appcompat:1.0.2'
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
