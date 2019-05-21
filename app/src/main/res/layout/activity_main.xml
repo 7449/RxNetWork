@@ -5,43 +5,16 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/bus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_send"
+            android:id="@+id/btn_test_bus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/post" />
-
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_unregister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/unregister" />
-
-    </LinearLayout>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_test_bus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/test_bus" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/bus_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            android:text="@string/test_bus" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_start_network"

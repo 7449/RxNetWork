@@ -13,6 +13,9 @@ object Api {
     interface ZLService {
         @GET("news/latest")
         fun getList(): Observable<ListModel>
+
+        @GET("news/latest")
+        fun getString(): Observable<String>
     }
 
 }

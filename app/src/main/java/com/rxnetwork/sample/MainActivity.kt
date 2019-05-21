@@ -4,14 +4,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.reflect.TypeToken
-import com.rxnetwork.sample.samplebus.A
+import com.rxnetwork.sample.bus.A
 import com.socks.library.KLog
-import io.reactivex.network.*
+import io.reactivex.network.RxBus
+import io.reactivex.network.RxNetWork
 import io.reactivex.network.cache.RxCache
+import io.reactivex.network.cancelTag
+import io.reactivex.network.getApi
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -20,13 +22,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        RxBus.register<ListModel>(BUS_TAG) { onBusNext { Toast.makeText(applicationContext, it.toString(), Toast.LENGTH_SHORT).show() } }
         setContentView(R.layout.activity_main)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
         adapter = MainAdapter()
         recyclerView.adapter = adapter
-        btn_send.setOnClickListener(this)
-        btn_unregister.setOnClickListener(this)
         btn_test_bus.setOnClickListener(this)
         btn_start_network.setOnClickListener(this)
         btn_cancel_network.setOnClickListener(this)
@@ -34,21 +33,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.btn_send -> RxBus.postBus(BUS_TAG, ListModel())
-            R.id.btn_unregister -> Toast.makeText(applicationContext, RxBus.unregisterBus(BUS_TAG).toString(), Toast.LENGTH_SHORT).show()
             R.id.btn_test_bus -> startActivity(A::class.java)
             R.id.btn_start_network -> {
                 RxNetWork
                         .observable(Api.ZLService::class.java)
                         .getList()
                         .cancelTag(javaClass.simpleName)
-                        .with(this, javaClass.simpleName)
                         .compose(RxCache.instance.transformerCN("cache", true, object : TypeToken<ListModel>() {}))
                         .map { listCacheResult ->
                             Log.i("RxCache", listCacheResult.type.toString() + " ------ " + listCacheResult.result)
                             listCacheResult.result
                         }
-                        .getApi(javaClass.simpleName) {
+                        .getApi(this, javaClass.simpleName) {
                             onNetWorkSuccess { adapter.addAll(it.top_stories) }
                             onNetWorkComplete { progress.visibility = View.GONE }
                             onNetWorkError { progress.visibility = View.GONE }
@@ -60,7 +56,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.btn_cancel_network -> RxNetWork.instance.cancel(javaClass.simpleName)
         }
-        bus_message.text = ""
     }
 
     private fun startActivity(clz: Class<*>) {
@@ -72,9 +67,5 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onBackPressed() {
         super.onBackPressed()
         KLog.i(RxBus.unregisterAllBus())
-    }
-
-    companion object {
-        private const val BUS_TAG = "bus_tag"
     }
 }

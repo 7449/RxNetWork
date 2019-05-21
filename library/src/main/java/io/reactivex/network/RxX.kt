@@ -16,7 +16,7 @@ inline fun <T> Observable<T>.getApi(tag: Any, rxNetWorkListener: RxNetWorkListen
 
 inline fun <T> Observable<T>.cancelTag(tag: Any) = also { RxNetWork.cancelTag(tag) }
 
-inline fun <T> Observable<T>.with(activity: FragmentActivity, tag: Any) = also {
+inline fun <T> Observable<T>.getApi(activity: FragmentActivity, tag: Any, noinline rxNetWorkListenerKt: SimpleRxNetWorkListenerKt<T>.() -> Unit) = also {
     val supportFragmentManager = activity.supportFragmentManager
     var tagFragment = supportFragmentManager.findFragmentByTag(RxNetWorkTagFragment.TAG)
     if (tagFragment == null) {
@@ -26,9 +26,10 @@ inline fun <T> Observable<T>.with(activity: FragmentActivity, tag: Any) = also {
     if (tagFragment is RxNetWorkTagFragment) {
         tagFragment.addNetWorkTags(tag)
     }
+    getApi(tag, rxNetWorkListenerKt)
 }
 
-inline fun <T> Observable<T>.with(fragment: Fragment, tag: Any) = also {
+inline fun <T> Observable<T>.with(fragment: Fragment, tag: Any, noinline rxNetWorkListenerKt: SimpleRxNetWorkListenerKt<T>.() -> Unit) = also {
     val activity = fragment.activity ?: return@also
-    with(activity, tag)
+    getApi(activity, tag, rxNetWorkListenerKt)
 }

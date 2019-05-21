@@ -1,4 +1,4 @@
-package com.rxnetwork.sample.samplebus
+package com.rxnetwork.sample.bus
 
 import android.content.Intent
 import android.os.Bundle
