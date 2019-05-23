@@ -73,12 +73,12 @@ interface RxNetOptionFactory {
     val baseUrl: String
     val timeoutTime: Long
     val retryOnConnectionFailure: Boolean
+    val interceptors: List<Interceptor>?
+    val netInterceptors: List<Interceptor>?
     val okHttpClient: OkHttpClient
     val retrofit: Retrofit
     val adapterFactory: CallAdapter.Factory
     val converterFactory: Converter.Factory
-    val logInterceptor: Interceptor?
-    val headerInterceptor: Interceptor?
 }
 
 class SimpleRxNetOptionFactoryKt {
@@ -90,8 +90,8 @@ class SimpleRxNetOptionFactoryKt {
     private var superRetrofit: Retrofit? = null
     private var superAdapterFactory: CallAdapter.Factory? = null
     private var superConverterFactory: Converter.Factory? = null
-    private var superLogInterceptor: Interceptor? = null
-    private var superHeaderInterceptor: Interceptor? = null
+    private var superInterceptor: List<Interceptor>? = null
+    private var superNetInterceptor: List<Interceptor>? = null
 
     fun superBaseUrl(superBaseUrl: () -> String) {
         this.superBaseUrl = superBaseUrl.invoke()
@@ -121,12 +121,12 @@ class SimpleRxNetOptionFactoryKt {
         this.superConverterFactory = superConverterFactory.invoke()
     }
 
-    fun superLogInterceptor(superLogInterceptor: () -> Interceptor) {
-        this.superLogInterceptor = superLogInterceptor.invoke()
+    fun superInterceptor(superInterceptor: () -> List<Interceptor>) {
+        this.superInterceptor = superInterceptor.invoke()
     }
 
-    fun superHeaderInterceptor(superHeaderInterceptor: () -> Interceptor) {
-        this.superHeaderInterceptor = superHeaderInterceptor.invoke()
+    fun superNetInterceptor(superNetInterceptor: () -> List<Interceptor>) {
+        this.superNetInterceptor = superNetInterceptor.invoke()
     }
 
     internal fun build(): RxNetOptionFactory {
@@ -139,7 +139,7 @@ class SimpleRxNetOptionFactoryKt {
                 get() = superRetryOnConnectionFailure
             override val okHttpClient: OkHttpClient
                 get() = superOkHttpClient
-                        ?: initOkHttp(timeoutTime, retryOnConnectionFailure, logInterceptor, headerInterceptor)
+                        ?: initOkHttp(timeoutTime, retryOnConnectionFailure, interceptors, netInterceptors)
             override val retrofit: Retrofit
                 get() = superRetrofit ?: Retrofit.Builder()
                         .client(okHttpClient)
@@ -152,22 +152,22 @@ class SimpleRxNetOptionFactoryKt {
             override val converterFactory: Converter.Factory
                 get() = superConverterFactory
                         ?: throw KotlinNullPointerException("check converter factory")
-            override val logInterceptor: Interceptor?
-                get() = superLogInterceptor
-            override val headerInterceptor: Interceptor?
-                get() = superHeaderInterceptor
+            override val interceptors: List<Interceptor>?
+                get() = superInterceptor
+            override val netInterceptors: List<Interceptor>?
+                get() = superNetInterceptor
         }
     }
 }
 
 @Suppress("LeakingThis")
 open class SimpleRxNetOptionFactory(override val baseUrl: String, override val converterFactory: Converter.Factory) : RxNetOptionFactory {
-    override val logInterceptor: Interceptor? = null
-    override val headerInterceptor: Interceptor? = null
+    override val interceptors: List<Interceptor>? = null
+    override val netInterceptors: List<Interceptor>? = null
     override val timeoutTime: Long = 15
     override val retryOnConnectionFailure: Boolean = true
     override val adapterFactory: CallAdapter.Factory = RxJava2CallAdapterFactory.create()
-    override val okHttpClient: OkHttpClient = initOkHttp(timeoutTime, retryOnConnectionFailure, logInterceptor, headerInterceptor)
+    override val okHttpClient: OkHttpClient = initOkHttp(timeoutTime, retryOnConnectionFailure, interceptors, netInterceptors)
     override val retrofit: Retrofit = Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(baseUrl)
@@ -176,10 +176,10 @@ open class SimpleRxNetOptionFactory(override val baseUrl: String, override val c
             .build()
 }
 
-private fun initOkHttp(timeoutTime: Long, retryOnConnectionFailure: Boolean, logInterceptor: Interceptor?, headerInterceptor: Interceptor?): OkHttpClient {
+private fun initOkHttp(timeoutTime: Long, retryOnConnectionFailure: Boolean, interceptors: List<Interceptor>?, netInterceptors: List<Interceptor>?): OkHttpClient {
     val builder = OkHttpClient.Builder()
-    logInterceptor?.let { builder.addInterceptor(it) }
-    headerInterceptor?.let { builder.addInterceptor(it) }
+    interceptors?.let { it -> it.forEach { builder.addInterceptor(it) } }
+    netInterceptors?.let { it -> it.forEach { builder.addNetworkInterceptor(it) } }
     return builder
             .connectTimeout(timeoutTime, TimeUnit.SECONDS)
             .writeTimeout(timeoutTime, TimeUnit.SECONDS)

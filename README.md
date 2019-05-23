@@ -13,7 +13,7 @@ android 网络请求简化库
 
 > 
     
-    implementation 'com.ydevelop:rxNetWork:0.1.98'
+    implementation 'com.ydevelop:rxNetWork:0.1.99'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'

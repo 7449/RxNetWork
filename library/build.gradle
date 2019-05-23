@@ -13,7 +13,7 @@ android {
     }
 }
 
-version = "0.1.98"
+version = "0.1.99"
 group = "com.ydevelop"
 androidArtifact {
     artifactId = "rxNetWork"
