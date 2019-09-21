@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             Log.i("RxCache", listCacheResult.type.toString() + " ------ " + listCacheResult.result)
                             listCacheResult.result
                         }
-                        .getApi(this, javaClass.simpleName) {
+                        .getApi(javaClass.simpleName) {
                             onNetWorkSuccess { adapter.addAll(it.top_stories) }
                             onNetWorkComplete { progress.visibility = View.GONE }
                             onNetWorkError { progress.visibility = View.GONE }

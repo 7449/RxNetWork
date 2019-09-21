@@ -3,17 +3,9 @@ this is android network ,and RxBus
 
 android 网络请求简化库
 
-> RxNetWork项目试用：
-
-~~[https://github.com/7449/ZLSimple](https://github.com/7449/ZLSimple)~~
-
-> RxJsoupNetWork项目试用
-
-[https://github.com/7449/JsoupSample](https://github.com/7449/JsoupSample)
-
 > 
     
-    implementation 'com.ydevelop:rxNetWork:0.1.99'
+    implementation 'com.ydevelop:rxNetWork:0.2.0'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'

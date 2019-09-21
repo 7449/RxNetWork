@@ -3,17 +3,17 @@ apply plugin: 'kotlin-android'
 apply plugin: "guru.stefma.bintrayrelease"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 29
     }
     compileOptions {
         kotlinOptions.freeCompilerArgs += ['-module-name', "com.ydevelop.rxNetWork"]
     }
 }
 
-version = "0.1.99"
+version = "0.2.0"
 group = "com.ydevelop"
 androidArtifact {
     artifactId = "rxNetWork"
@@ -29,7 +29,7 @@ dependencies {
     compileOnly 'io.reactivex.rxjava2:rxandroid:2.1.1'
     compileOnly 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
     compileOnly 'com.google.code.gson:gson:2.8.5'
-    compileOnly "org.jsoup:jsoup:1.11.3"
-    compileOnly 'androidx.appcompat:appcompat:1.0.2'
+    compileOnly "org.jsoup:jsoup:1.12.1"
+    compileOnly 'androidx.appcompat:appcompat:1.1.0'
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
