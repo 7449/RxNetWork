@@ -3,8 +3,8 @@ package com.rxnetwork.sample
 import android.app.Application
 import android.content.Context
 import android.os.Environment
+import io.reactivex.cache.RxCache
 import io.reactivex.network.RxNetWork
-import io.reactivex.network.cache.RxCache
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 

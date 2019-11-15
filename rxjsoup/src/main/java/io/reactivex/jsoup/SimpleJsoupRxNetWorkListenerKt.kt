@@ -1,25 +1,10 @@
-package io.reactivex.network
+package io.reactivex.jsoup
 
-import io.reactivex.Observable
+import io.reactivex.network.RxNetWorkListener
 import okhttp3.ResponseBody
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Url
 import java.io.IOException
-
-interface JsoupService {
-    @GET
-    fun get(@Url url: String): Observable<ResponseBody>
-
-    @POST
-    fun post(@Url url: String): Observable<ResponseBody>
-}
-
-fun <T> Observable<ResponseBody>.jsoupApi(tag: Any, rxNetWorkListenerKt: SimpleJsoupRxNetWorkListenerKt<T>.() -> Unit) {
-    RxNetWork.instance.getApi(tag, this, SimpleJsoupRxNetWorkListenerKt<T>().also(rxNetWorkListenerKt).build())
-}
 
 class SimpleJsoupRxNetWorkListenerKt<T> {
 

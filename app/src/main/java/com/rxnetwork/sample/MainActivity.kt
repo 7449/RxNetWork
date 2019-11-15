@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.reflect.TypeToken
 import com.rxnetwork.sample.bus.A
 import com.socks.library.KLog
-import io.reactivex.network.RxBus
+import io.reactivex.bus.RxBus
+import io.reactivex.cache.RxCache
 import io.reactivex.network.RxNetWork
-import io.reactivex.network.cache.RxCache
 import io.reactivex.network.cancelTag
 import io.reactivex.network.getApi
 import kotlinx.android.synthetic.main.activity_main.*
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         .observable(Api.ZLService::class.java)
                         .getList()
                         .cancelTag(javaClass.simpleName)
-                        .compose(RxCache.instance.transformerCN("cache", true, object : TypeToken<ListModel>() {}))
+                        .compose(RxCache.instance.transformerCN("cache", false, object : TypeToken<ListModel>() {}))
                         .map { listCacheResult ->
                             Log.i("RxCache", listCacheResult.type.toString() + " ------ " + listCacheResult.result)
                             listCacheResult.result

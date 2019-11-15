@@ -1,4 +1,4 @@
-package io.reactivex.network.cache
+package io.reactivex.cache
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -13,7 +13,6 @@ import java.nio.charset.Charset
  * by y on 20/09/2017.
  * file缓存
  */
-
 class LruDisk(path: File, version: Int, valueCount: Int, maxSize: Int) {
 
     private var diskLruCache: DiskLruCache

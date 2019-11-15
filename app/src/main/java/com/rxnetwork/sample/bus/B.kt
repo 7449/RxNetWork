@@ -2,7 +2,7 @@ package com.rxnetwork.sample.bus
 
 import android.os.Bundle
 import com.rxnetwork.sample.R
-import io.reactivex.network.RxBus
+import io.reactivex.bus.RxBus
 import kotlinx.android.synthetic.main.activity_bus.*
 
 /**

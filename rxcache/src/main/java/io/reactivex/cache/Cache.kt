@@ -1,4 +1,4 @@
-package io.reactivex.network.cache
+package io.reactivex.cache
 
 import io.reactivex.Observable
 import io.reactivex.ObservableSource

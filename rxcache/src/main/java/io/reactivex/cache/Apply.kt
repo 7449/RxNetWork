@@ -1,4 +1,4 @@
-package io.reactivex.network.cache
+package io.reactivex.cache
 
 import com.google.gson.reflect.TypeToken
 import io.reactivex.Observable

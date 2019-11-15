@@ -11,23 +11,26 @@ android {
         versionName "1.0"
     }
 }
-
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
 
     implementation 'com.ydevelop:klog:0.0.1'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'
     implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
     implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
+    implementation "org.jsoup:jsoup:1.12.1"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation project(':library')
+    implementation 'com.ydevelop:rxNetWork:0.2.1'
+    implementation 'com.ydevelop:rxbus:0.0.1'
+    implementation 'com.ydevelop:rxcache:0.0.1'
+    implementation 'com.ydevelop:rxjsoup:0.0.1'
 }

@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import io.reactivex.network.RxBus
-import io.reactivex.network.RxBusCallBack
+import io.reactivex.bus.RxBus
+import io.reactivex.bus.RxBusCallBack
 
 /**
  * by y on 2017/5/22
@@ -15,7 +15,10 @@ abstract class BaseActivity : AppCompatActivity(), RxBusCallBack<String> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        RxBus.register<Any>(javaClass.simpleName) { onBusNext { Toast.makeText(applicationContext, javaClass.simpleName + " : : : " + it, Toast.LENGTH_SHORT).show() } }
+        RxBus.register<Any>(javaClass.simpleName) {
+            onBusNext { Toast.makeText(applicationContext, javaClass.simpleName + " : : : " + it, Toast.LENGTH_SHORT).show() }
+            busOfType { Any::class.java }
+        }
     }
 
     override fun onBusError(throwable: Throwable) {
