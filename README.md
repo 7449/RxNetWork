@@ -5,16 +5,19 @@
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    
+    implementation 'com.ydevelop:rxNetWork:0.2.1'
+
 ## rxbus
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'com.ydevelop:rxbus:0.0.1'
 
 ## rxcache
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    implementation 'com.ydevelop:rxcache:0.0.1'
 
 ## rxjsoup
 
@@ -22,7 +25,8 @@
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation "org.jsoup:jsoup:1.12.1"
-   
+    implementation 'com.ydevelop:rxjsoup:0.0.1'
+
 #### rxnetwork init
 
     RxNetWork.initOption {
@@ -77,22 +81,15 @@
 
 #### rxcache api
 
-* 只走网络 
-
-
     Observable
               .compose(RxCache.getInstance().<T>transformerN())
               
               
-* 走缓存
-
-true ： 有网的情况下 网络优先，否则 缓存优先
-
     Observable
               .compose(RxCache.getInstance().transformerCN("", true, new TypeToken<Any>() {}))
 
 
-#### RxBus
+#### rxbus
 
     RxBus.postBus(tag,message)
 
