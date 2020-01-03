@@ -8,14 +8,14 @@ import retrofit2.http.GET
  */
 object Api {
 
-    const val ZL_BASE_API = "https://news-at.zhihu.com/api/4/"
+    const val BASE_API = "https://news-at.zhihu.com/api/4/"
 
     interface ZLService {
         @GET("news/latest")
         fun getList(): Observable<ListModel>
 
         @GET("news/latest")
-        fun getString(): Observable<String>
+        suspend fun getListSuspend(): ListModel
     }
 
 }

@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-//apply plugin: "guru.stefma.bintrayrelease"
+apply plugin: "guru.stefma.bintrayrelease"
 android {
     compileSdkVersion 29
     defaultConfig {
@@ -11,17 +11,17 @@ android {
         kotlinOptions.freeCompilerArgs += ['-module-name', "com.ydevelop.rxjsoup"]
     }
 }
-//version = "0.0.1"
-//group = "com.ydevelop"
-//androidArtifact {
-//    artifactId = "rxjsoup"
-//    javadoc = false
-//}
-//publish {
-//    userOrg = 'ydevelop'
-//    desc = 'this is rxjsoup'
-//    website = 'https://github.com/7449/RxNetWork'
-//}
+version = "0.0.1"
+group = "com.ydevelop"
+androidArtifact {
+    artifactId = "rxjsoup"
+    javadoc = false
+}
+publish {
+    userOrg = 'ydevelop'
+    desc = 'this is rxjsoup'
+    website = 'https://github.com/7449/RxNetWork'
+}
 dependencies {
     compileOnly 'com.ydevelop:rxNetWork:0.2.1'
     compileOnly 'io.reactivex.rxjava2:rxandroid:2.1.1'

@@ -15,6 +15,9 @@ import io.reactivex.network.RxNetWork
 import io.reactivex.network.cancelTag
 import io.reactivex.network.getApi
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -35,6 +38,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         when (v.id) {
             R.id.btn_test_bus -> startActivity(A::class.java)
             R.id.btn_start_network -> {
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    val listSuspend = RxNetWork.observable(Api.ZLService::class.java).getListSuspend()
+                }
+
                 RxNetWork
                         .observable(Api.ZLService::class.java)
                         .getList()
@@ -45,7 +53,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             listCacheResult.result
                         }
                         .getApi(javaClass.simpleName) {
-                            onNetWorkSuccess { adapter.addAll(it.top_stories) }
+                            onNetWorkSuccess { adapter.addAll(it.stories) }
                             onNetWorkComplete { progress.visibility = View.GONE }
                             onNetWorkError { progress.visibility = View.GONE }
                             onNetWorkStart {

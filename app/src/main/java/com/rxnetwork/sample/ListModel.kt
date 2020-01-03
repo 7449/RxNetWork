@@ -1,14 +1,11 @@
 package com.rxnetwork.sample
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * by y on 2016/8/7.
  */
-class ListModel {
-    lateinit var top_stories: List<DataModel>
-}
+class ListModel(@SerializedName("top_stories") val stories: List<DataModel>)
 
-class DataModel {
-    var title: String = ""
-    var image: String = ""
-}
+class DataModel(val title: String, val image: String)
 

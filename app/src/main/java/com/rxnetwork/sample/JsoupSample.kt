@@ -6,7 +6,6 @@ import io.reactivex.network.RxNetWork
 
 object JsoupSample {
 
-
     fun test() {
         RxNetWork
                 .observable(JsoupService::class.java)

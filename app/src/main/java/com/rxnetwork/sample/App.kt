@@ -11,12 +11,11 @@ import java.io.File
 /**
  * by y on 2017/2/27
  */
-
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
         RxNetWork.initOption {
-            superBaseUrl { Api.ZL_BASE_API }
+            superBaseUrl { Api.BASE_API }
             superConverterFactory { GsonConverterFactory.create() }
         }
         RxCache

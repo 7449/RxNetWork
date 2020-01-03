@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-//apply plugin: "guru.stefma.bintrayrelease"
+apply plugin: "guru.stefma.bintrayrelease"
 android {
     compileSdkVersion 29
     defaultConfig {
@@ -11,17 +11,17 @@ android {
         kotlinOptions.freeCompilerArgs += ['-module-name', "com.ydevelop.rxcache"]
     }
 }
-//version = "0.0.1"
-//group = "com.ydevelop"
-//androidArtifact {
-//    artifactId = "rxcache"
-//    javadoc = false
-//}
-//publish {
-//    userOrg = 'ydevelop'
-//    desc = 'this is rxcache'
-//    website = 'https://github.com/7449/RxNetWork'
-//}
+version = "0.0.1"
+group = "com.ydevelop"
+androidArtifact {
+    artifactId = "rxcache"
+    javadoc = false
+}
+publish {
+    userOrg = 'ydevelop'
+    desc = 'this is rxcache'
+    website = 'https://github.com/7449/RxNetWork'
+}
 dependencies {
     compileOnly 'io.reactivex.rxjava2:rxandroid:2.1.1'
     compileOnly 'com.google.code.gson:gson:2.8.5'
