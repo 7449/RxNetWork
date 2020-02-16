@@ -10,6 +10,10 @@ android {
     compileOptions {
         kotlinOptions.freeCompilerArgs += ['-module-name', "com.ydevelop.rxbus"]
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 version = "0.0.1"
 group = "com.ydevelop"
@@ -23,6 +27,6 @@ publish {
     website = 'https://github.com/7449/RxNetWork'
 }
 dependencies {
-    compileOnly 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    compileOnly "io.reactivex.rxjava3:rxandroid:$rxandroid3Version"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

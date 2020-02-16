@@ -1,6 +1,6 @@
 package io.reactivex.bus
 
-import io.reactivex.observers.DisposableObserver
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.observers.DisposableObserver
+import io.reactivex.rxjava3.subjects.Subject
 
-class RxBusEvent(var subject: Subject<Any>, var disposable: DisposableObserver<*>)
+class RxBusEvent(val subject: Subject<Any>, val disposable: DisposableObserver<*>)

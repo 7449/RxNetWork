@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.reflect.TypeToken
 import com.rxnetwork.sample.bus.A
-import com.socks.library.KLog
 import io.reactivex.bus.RxBus
 import io.reactivex.cache.RxCache
 import io.reactivex.network.RxNetWork
@@ -74,6 +73,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        KLog.i(RxBus.unregisterAllBus())
+        Log.i(javaClass.simpleName, RxBus.unregisterAllBus().toString())
     }
 }

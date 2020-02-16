@@ -10,6 +10,10 @@ android {
     compileOptions {
         kotlinOptions.freeCompilerArgs += ['-module-name', "com.ydevelop.rxcache"]
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 version = "0.0.1"
 group = "com.ydevelop"
@@ -23,8 +27,8 @@ publish {
     website = 'https://github.com/7449/RxNetWork'
 }
 dependencies {
-    compileOnly 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    compileOnly 'com.google.code.gson:gson:2.8.5'
-    compileOnly 'com.squareup.retrofit2:retrofit:2.6.2'
+    compileOnly "io.reactivex.rxjava2:rxandroid:$rxandroidVersion"
+    compileOnly "com.google.code.gson:gson:$gsonVersion"
+    compileOnly "com.squareup.retrofit2:retrofit:$retrofitVersion"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
