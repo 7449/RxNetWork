@@ -7,10 +7,8 @@ import java.io.File
 class RxCache private constructor() {
 
     companion object {
-        @JvmStatic
         val instance: RxCache by lazy { RxCache() }
 
-        @JvmStatic
         fun <T> customizeTransformer(key: Any, simpleCustomizeTransformerCallKt: SimpleCustomizeTransformerCallKt<T>.() -> Unit): ObservableTransformer<T, CacheResult<T>> {
             return instance.customizeTransformer(key, SimpleCustomizeTransformerCallKt<T>().also(simpleCustomizeTransformerCallKt).build())
         }

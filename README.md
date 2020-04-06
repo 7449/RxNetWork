@@ -5,69 +5,46 @@
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    implementation 'com.ydevelop:rxNetWork:0.2.1'
+    implementation 'com.ydevelop:rxNetWork:0.2.2'
 
 ## rxbus
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'com.ydevelop:rxbus:0.0.1'
+    implementation 'com.ydevelop:rxbus:0.0.2'
 
 ## rxcache
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
-    implementation 'com.ydevelop:rxcache:0.0.1'
+    implementation 'com.ydevelop:rxcache:0.0.2'
 
 ## rxjsoup
 
-    implementation 'com.ydevelop:rxNetWork:0.2.1'
+    implementation 'com.ydevelop:rxNetWork:0.2.2'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation "org.jsoup:jsoup:1.12.1"
-    implementation 'com.ydevelop:rxjsoup:0.0.1'
+    implementation 'com.ydevelop:rxjsoup:0.0.2'
 
 #### rxnetwork init
 
-    RxNetWork.initOption {
-        superBaseUrl { baseUrl }
-        superConverterFactory { GsonConverterFactory.create() }
-    }
-    
-    or
-
-    RxNetWork.initialization(object : RxNetOptionFactory {
-        override val adapterFactory: CallAdapter.Factory
-            get() = 
-        override val baseUrl: String
-            get() = 
-        override val converterFactory: Converter.Factory
-            get() = 
-        override val interceptors: List<Interceptor>?
-            get() = 
-        override val netInterceptors: List<Interceptor>?
-            get() = 
-        override val okHttpClient: OkHttpClient
-            get() = 
-        override val retrofit: Retrofit
-            get() = 
-        override val retryOnConnectionFailure: Boolean
-            get() = 
-        override val timeoutTime: Long
-            get() = 
-    })
+    RxNetWork.initialization(DefaultRxNetOption(
+            baseUrl = Api.BASE_API,
+            converterFactory = GsonConverterFactory.create()
+    ))
     
 #### rxnetwork api
 
-    RxNetWork
-            .observable(class.java)
-            .get()
-            .cancelTag(javaClass.simpleName)
-            .getApi(javaClass.simpleName) {
-                onNetWorkStart {}
-                onNetWorkSuccess {}
-                onNetWorkComplete {}
-                onNetWorkError {}
+    Service::class.java
+            .create()
+            .getList()
+            .cancel(javaClass.simpleName)
+            .request(javaClass.simpleName) {
+                onNetWorkSuccess {  }
+                onNetWorkComplete {  }
+                onNetWorkError {  }
+                onNetWorkStart {  }
             }
             
 #### rxcache init
@@ -91,9 +68,9 @@
 
 #### rxbus
 
-    RxBus.postBus(tag,message)
+    RxBus.instance.post(tag,message)
 
-    RxBus.register(tag,object :RxBusCallBack<Any>{
+    RxBus.instance.register(tag,object :RxBusCallBack<Any>{
                 override fun onBusError(throwable: Throwable) {
                 }
 
@@ -104,18 +81,19 @@
                 }
             })
 
-	RxBus.unregisterBus(tag)
-	RxBus.unregisterAllBus()
+	RxBus.instance.unregister(tag)
+	RxBus.instance.unregisterAllBus()
 	
 #### rxjsoup
 
-    RxNetWork
-            .observable(JsoupService::class.java)
-            .get(url) // post(url)
-            .jsoupApi<String>("tag") {
-                onNetWorkStart { }
-                onNetWorkSuccess { }
-                onNetWorkComplete { }
-                onNetWorkError { }
-                jsoupRule { document -> document.toString() }
+    JsoupService
+            .createGET(url)
+            .cancel("tag")
+            .request("tag") {
+                onNetWorkError {
+                    Log.e("jsoup", it.message.toString())
+                }
+                onNetWorkSuccess {
+                    Log.i("jsoup", it.string())
+                }
             }

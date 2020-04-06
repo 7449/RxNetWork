@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.os.Environment
 import io.reactivex.cache.RxCache
+import io.reactivex.network.DefaultRxNetOption
 import io.reactivex.network.RxNetWork
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
@@ -14,10 +15,10 @@ import java.io.File
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        RxNetWork.initOption {
-            superBaseUrl { Api.BASE_API }
-            superConverterFactory { GsonConverterFactory.create() }
-        }
+        RxNetWork.initialization(DefaultRxNetOption(
+                baseUrl = Api.BASE_API,
+                converterFactory = GsonConverterFactory.create()
+        ))
         RxCache
                 .instance
                 .setDiskBuilder(RxCache.DiskBuilder(getDiskCacheDir(this, "RxCache")))

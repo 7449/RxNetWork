@@ -14,7 +14,7 @@ class B : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bus)
-        btn_bus.setOnClickListener { RxBus.postBus(A::class.java.simpleName, "A activity接收到消息了") }
+        btn_bus.setOnClickListener { RxBus.instance.post(A::class.java.simpleName, "A activity接收到消息了") }
     }
 
     override fun onBusNext(entity: String) {

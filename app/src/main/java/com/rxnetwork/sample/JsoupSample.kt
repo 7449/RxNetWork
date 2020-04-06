@@ -1,21 +1,23 @@
 package com.rxnetwork.sample
 
+import android.util.Log
 import io.reactivex.jsoup.JsoupService
-import io.reactivex.jsoup.jsoupApi
-import io.reactivex.network.RxNetWork
+import io.reactivex.network.cancel
+import io.reactivex.network.request
 
 object JsoupSample {
 
     fun test() {
-        RxNetWork
-                .observable(JsoupService::class.java)
-                .get("https://www.baoidu.com")
-                .jsoupApi<String>("tag") {
-                    onNetWorkStart { }
-                    onNetWorkSuccess { }
-                    onNetWorkComplete { }
-                    onNetWorkError { }
-                    jsoupRule { document -> document.toString() }
+        JsoupService
+                .createGET("https://www.baidu.com")
+                .cancel("tag")
+                .request("tag") {
+                    onNetWorkError {
+                        Log.e("jsoup", it.message.toString())
+                    }
+                    onNetWorkSuccess {
+                        Log.i("jsoup", it.string())
+                    }
                 }
     }
 

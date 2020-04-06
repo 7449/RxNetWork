@@ -15,10 +15,7 @@ abstract class BaseActivity : AppCompatActivity(), RxBusCallBack<String> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        RxBus.register<Any>(javaClass.simpleName) {
-            onBusNext { Toast.makeText(applicationContext, javaClass.simpleName + " : : : " + it, Toast.LENGTH_SHORT).show() }
-            busOfType { Any::class.java }
-        }
+        RxBus.instance.register(javaClass.simpleName, this)
     }
 
     override fun onBusError(throwable: Throwable) {
@@ -29,7 +26,7 @@ abstract class BaseActivity : AppCompatActivity(), RxBusCallBack<String> {
 
     override fun onDestroy() {
         super.onDestroy()
-        RxBus.unregisterBus(javaClass.simpleName)
+        RxBus.instance.unregister(javaClass.simpleName)
     }
 
     protected fun startActivity(clz: Class<*>) {

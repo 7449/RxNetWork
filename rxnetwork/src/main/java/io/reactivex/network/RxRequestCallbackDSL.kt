@@ -1,23 +1,10 @@
 package io.reactivex.network
 
-interface RxNetWorkListener<in T> {
+/**
+ * 网络回调
+ */
+class RxRequestCallbackDSL<T> {
 
-    fun onNetWorkStart()
-
-    fun onNetWorkError(e: Throwable)
-
-    fun onNetWorkComplete()
-
-    fun onNetWorkSuccess(data: T)
-}
-
-class RxNetWorkTask<T>(var data: T, var tag: Any)
-
-interface RxNetWorkTaskListener<T> : RxNetWorkListener<T> {
-    val tag: Any
-}
-
-class SimpleRxNetWorkListenerKt<T> {
     private var onNetWorkStart: (() -> Unit)? = null
     private var onNetWorkError: ((e: Throwable) -> Unit)? = null
     private var onNetWorkComplete: (() -> Unit)? = null
@@ -39,14 +26,14 @@ class SimpleRxNetWorkListenerKt<T> {
         this.onNetWorkSuccess = onNetWorkSuccess
     }
 
-    internal fun build(): RxNetWorkListener<T> {
-        return object : RxNetWorkListener<T> {
+    internal fun build(): RxRequestCallback<T> {
+        return object : RxRequestCallback<T> {
             override fun onNetWorkStart() {
                 onNetWorkStart?.invoke()
             }
 
-            override fun onNetWorkError(e: Throwable) {
-                onNetWorkError?.invoke(e)
+            override fun onNetWorkError(throwable: Throwable) {
+                onNetWorkError?.invoke(throwable)
             }
 
             override fun onNetWorkComplete() {

@@ -15,7 +15,7 @@ android {
         targetCompatibility 1.8
     }
 }
-version = "0.0.1"
+version = "0.0.2"
 group = "com.ydevelop"
 androidArtifact {
     artifactId = "rxjsoup"
@@ -31,5 +31,5 @@ dependencies {
     compileOnly "io.reactivex.rxjava2:rxandroid:$rxandroidVersion"
     compileOnly "com.squareup.retrofit2:retrofit:$retrofitVersion"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation project(path: ':rxnetwork')
+    compileOnly 'com.ydevelop:rxNetWork:0.2.2'
 }

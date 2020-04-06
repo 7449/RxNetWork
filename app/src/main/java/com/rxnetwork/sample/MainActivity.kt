@@ -2,21 +2,16 @@ package com.rxnetwork.sample
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.reflect.TypeToken
 import com.rxnetwork.sample.bus.A
 import io.reactivex.bus.RxBus
-import io.reactivex.cache.RxCache
 import io.reactivex.network.RxNetWork
-import io.reactivex.network.cancelTag
-import io.reactivex.network.getApi
+import io.reactivex.network.cancel
+import io.reactivex.network.create
+import io.reactivex.network.request
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -24,6 +19,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        JsoupSample.test()
         setContentView(R.layout.activity_main)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
         adapter = MainAdapter()
@@ -37,21 +33,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         when (v.id) {
             R.id.btn_test_bus -> startActivity(A::class.java)
             R.id.btn_start_network -> {
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    val listSuspend = RxNetWork.observable(Api.ZLService::class.java).getListSuspend()
-                }
-
-                RxNetWork
-                        .observable(Api.ZLService::class.java)
+                Api.ZLService::class.java.create()
                         .getList()
-                        .cancelTag(javaClass.simpleName)
-                        .compose(RxCache.instance.transformerCN("cache", false, object : TypeToken<ListModel>() {}))
-                        .map { listCacheResult ->
-                            Log.i("RxCache", listCacheResult.type.toString() + " ------ " + listCacheResult.result)
-                            listCacheResult.result
-                        }
-                        .getApi(javaClass.simpleName) {
+                        .cancel(javaClass.simpleName)
+                        .request(javaClass.simpleName) {
                             onNetWorkSuccess { adapter.addAll(it.stories) }
                             onNetWorkComplete { progress.visibility = View.GONE }
                             onNetWorkError { progress.visibility = View.GONE }
@@ -73,6 +58,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        Log.i(javaClass.simpleName, RxBus.unregisterAllBus().toString())
+        RxBus.instance.unregisterAll()
     }
 }

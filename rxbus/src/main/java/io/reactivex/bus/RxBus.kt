@@ -1,31 +1,15 @@
 package io.reactivex.bus
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.observers.DisposableObserver
-import io.reactivex.rxjava3.schedulers.Schedulers
-import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.observers.DisposableObserver
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 
 
 class RxBus private constructor() {
 
     companion object {
-        @JvmStatic
         val instance: RxBus by lazy { RxBus() }
-
-        @JvmStatic
-        fun <T> register(any: Any, rxBusCallbackKt: SimpleRxBusCallbackKt<T>.() -> Unit) = instance.register(any, SimpleRxBusCallbackKt<T>().also(rxBusCallbackKt).build())
-
-        @JvmStatic
-        fun postBus(tag: Any, obj: Any) = instance.post(tag, obj)
-
-        @JvmStatic
-        fun unregisterBus(tag: Any) = instance.unregister(tag)
-
-        @JvmStatic
-        fun unregisterAllBus() = instance.unregisterAll()
-
-        @JvmStatic
-        fun disposeBus(tag: Any): Boolean = instance.dispose(tag)
     }
 
     private val rxBusEventArrayMap: HashMap<Any, RxBusEvent> = HashMap()
@@ -67,36 +51,31 @@ class RxBus private constructor() {
         }
     }
 
+    fun containsTag(key: Any): Boolean = rxBusEventArrayMap.containsKey(key)
+
     /**
      * 取消订阅
-     *
-     * @param tag 标志
-     * @return true 取消成功
      */
-    fun unregister(tag: Any): Boolean {
-        val rxBusEvent = rxBusEventArrayMap[tag] ?: return true
-        val disposable = rxBusEvent.disposable
-        if (!disposable.isDisposed) {
-            disposable.dispose()
+    fun unregister(tag: Any) {
+        rxBusEventArrayMap[tag]?.let {
+            val disposable = it.disposable
+            if (!disposable.isDisposed) {
+                disposable.dispose()
+            }
         }
         rxBusEventArrayMap.remove(tag)
-        return false
     }
 
     /**
      * 取消所有订阅
-     *
-     * @return 返回false 证明还有订阅没有被取消,注意内存泄漏...
      */
-    fun unregisterAll(): Boolean {
-        for ((key) in rxBusEventArrayMap) {
-            val unregister = unregister(key)
-            if (!unregister) {
-                return false
+    fun unregisterAll() {
+        rxBusEventArrayMap.forEach {
+            if (!it.value.disposable.isDisposed) {
+                it.value.disposable.dispose()
             }
         }
-        return true
+        rxBusEventArrayMap.clear()
     }
 
-    fun dispose(tag: Any): Boolean = rxBusEventArrayMap[tag]?.disposable?.isDisposed ?: true
 }

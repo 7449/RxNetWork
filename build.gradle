@@ -6,7 +6,7 @@ buildscript {
         maven { url 'https://maven.aliyun.com/repository/public/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:4.1.0-alpha04'
         classpath "guru.stefma.bintrayrelease:bintrayrelease:1.1.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -27,13 +27,12 @@ ext {
 
     appcompatVersion = '1.1.0'
 
-    glideVersion = '4.10.0'
+    glideVersion = '4.11.0'
     jsoupVersion = '1.12.2'
     kcaVersion = '1.3.3'
 
-    retrofitVersion = '2.7.1'
+    retrofitVersion = '2.7.2'
     rxandroidVersion = '2.1.1'
-    rxandroid3Version = '3.0.0'
     gsonVersion = '2.8.5'
 
 }

@@ -15,7 +15,7 @@ android {
         targetCompatibility 1.8
     }
 }
-version = "0.0.1"
+version = "0.0.2"
 group = "com.ydevelop"
 androidArtifact {
     artifactId = "rxbus"
@@ -27,6 +27,6 @@ publish {
     website = 'https://github.com/7449/RxNetWork'
 }
 dependencies {
-    compileOnly "io.reactivex.rxjava3:rxandroid:$rxandroid3Version"
+    compileOnly "io.reactivex.rxjava2:rxandroid:$rxandroidVersion"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
